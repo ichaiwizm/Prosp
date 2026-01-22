@@ -1,11 +1,17 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import type { DealFormData, DealStage, DealStatus } from '@/types';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import type { DealFormData, DealStage, DealStatus } from "@/types";
 
 interface DealFormProps {
   initialData?: Partial<DealFormData>;
@@ -15,13 +21,13 @@ interface DealFormProps {
 
 export function DealForm({ initialData, onSubmit, onCancel }: DealFormProps) {
   const [formData, setFormData] = useState<DealFormData>({
-    title: initialData?.title || '',
+    title: initialData?.title || "",
     amount: initialData?.amount || 0,
-    currency: initialData?.currency || 'USD',
-    stage: initialData?.stage || 'prospecting',
+    currency: initialData?.currency || "USD",
+    stage: initialData?.stage || "prospecting",
     probability: initialData?.probability || 0,
-    status: initialData?.status || 'open',
-    notes: initialData?.notes || '',
+    status: initialData?.status || "open",
+    notes: initialData?.notes || "",
     tags: initialData?.tags || [],
   });
 
@@ -33,7 +39,9 @@ export function DealForm({ initialData, onSubmit, onCancel }: DealFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <label htmlFor="title" className="text-sm font-medium">Title *</label>
+        <label htmlFor="title" className="text-sm font-medium">
+          Title *
+        </label>
         <Input
           id="title"
           value={formData.title}
@@ -43,21 +51,29 @@ export function DealForm({ initialData, onSubmit, onCancel }: DealFormProps) {
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="amount" className="text-sm font-medium">Amount *</label>
+        <label htmlFor="amount" className="text-sm font-medium">
+          Amount *
+        </label>
         <Input
           id="amount"
           type="number"
           value={formData.amount}
-          onChange={(e) => setFormData({ ...formData, amount: parseFloat(e.target.value) })}
+          onChange={(e) =>
+            setFormData({ ...formData, amount: parseFloat(e.target.value) })
+          }
           required
         />
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="stage" className="text-sm font-medium">Stage</label>
+        <label htmlFor="stage" className="text-sm font-medium">
+          Stage
+        </label>
         <Select
           value={formData.stage}
-          onValueChange={(value: DealStage) => setFormData({ ...formData, stage: value })}
+          onValueChange={(value: DealStage) =>
+            setFormData({ ...formData, stage: value })
+          }
         >
           <SelectTrigger>
             <SelectValue />
@@ -74,19 +90,25 @@ export function DealForm({ initialData, onSubmit, onCancel }: DealFormProps) {
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="probability" className="text-sm font-medium">Probability (%)</label>
+        <label htmlFor="probability" className="text-sm font-medium">
+          Probability (%)
+        </label>
         <Input
           id="probability"
           type="number"
           min="0"
           max="100"
           value={formData.probability}
-          onChange={(e) => setFormData({ ...formData, probability: parseInt(e.target.value) })}
+          onChange={(e) =>
+            setFormData({ ...formData, probability: parseInt(e.target.value) })
+          }
         />
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="notes" className="text-sm font-medium">Notes</label>
+        <label htmlFor="notes" className="text-sm font-medium">
+          Notes
+        </label>
         <Textarea
           id="notes"
           value={formData.notes}

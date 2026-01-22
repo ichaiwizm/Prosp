@@ -1,32 +1,34 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { Header } from '@/components/layout/header';
-import { PageContainer } from '@/components/layout/page-container';
-import { DocSearch } from '@/components/features/docs/doc-search';
-import { DocCard } from '@/components/features/docs/doc-card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card } from '@/components/ui/card';
-import { LoadingSpinner } from '@/components/shared/LoadingSpinner';
-import { EmptyState } from '@/components/shared/EmptyState';
-import { KnowledgeDoc, KnowledgeDocCategory } from '@/types';
-import { BookOpen, Filter, X } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { Header } from "@/components/layout/header";
+import { PageContainer } from "@/components/layout/page-container";
+import { DocSearch } from "@/components/features/docs/doc-search";
+import { DocCard } from "@/components/features/docs/doc-card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
+import { EmptyState } from "@/components/shared/EmptyState";
+import { KnowledgeDoc, KnowledgeDocCategory } from "@/types";
+import { BookOpen, Filter, X } from "lucide-react";
 
-const categories: { value: KnowledgeDocCategory | 'all'; label: string }[] = [
-  { value: 'all', label: 'Tous' },
-  { value: 'SITUATION', label: 'Situations' },
-  { value: 'SERVICE', label: 'Services' },
-  { value: 'PROCESS', label: 'Processus' },
-  { value: 'TEMPLATE', label: 'Templates' }
+const categories: { value: KnowledgeDocCategory | "all"; label: string }[] = [
+  { value: "all", label: "Tous" },
+  { value: "SITUATION", label: "Situations" },
+  { value: "SERVICE", label: "Services" },
+  { value: "PROCESS", label: "Processus" },
+  { value: "TEMPLATE", label: "Templates" },
 ];
 
 export default function DocsPage() {
   const [docs, setDocs] = useState<KnowledgeDoc[]>([]);
   const [filteredDocs, setFilteredDocs] = useState<KnowledgeDoc[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<KnowledgeDocCategory | 'all'>('all');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<
+    KnowledgeDocCategory | "all"
+  >("all");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [allTags, setAllTags] = useState<string[]>([]);
 
@@ -44,12 +46,13 @@ export default function DocsPage() {
     try {
       setLoading(true);
       const params = new URLSearchParams();
-      if (searchQuery) params.append('search', searchQuery);
-      if (selectedCategory !== 'all') params.append('category', selectedCategory);
-      if (selectedTag) params.append('tag', selectedTag);
+      if (searchQuery) params.append("search", searchQuery);
+      if (selectedCategory !== "all")
+        params.append("category", selectedCategory);
+      if (selectedTag) params.append("tag", selectedTag);
 
       const response = await fetch(`/api/knowledge-docs?${params.toString()}`);
-      if (!response.ok) throw new Error('Failed to fetch documents');
+      if (!response.ok) throw new Error("Failed to fetch documents");
 
       const data = await response.json();
       setDocs(data);
@@ -61,7 +64,7 @@ export default function DocsPage() {
       });
       setAllTags(Array.from(tags).sort());
     } catch (error) {
-      console.error('Error fetching documents:', error);
+      console.error("Error fetching documents:", error);
     } finally {
       setLoading(false);
     }
@@ -76,12 +79,12 @@ export default function DocsPage() {
       filtered = filtered.filter(
         (doc) =>
           doc.title.toLowerCase().includes(query) ||
-          doc.content.toLowerCase().includes(query)
+          doc.content.toLowerCase().includes(query),
       );
     }
 
     // Filter by category
-    if (selectedCategory !== 'all') {
+    if (selectedCategory !== "all") {
       filtered = filtered.filter((doc) => doc.category === selectedCategory);
     }
 
@@ -97,7 +100,7 @@ export default function DocsPage() {
     setSearchQuery(query);
   };
 
-  const handleCategoryChange = (category: KnowledgeDocCategory | 'all') => {
+  const handleCategoryChange = (category: KnowledgeDocCategory | "all") => {
     setSelectedCategory(category);
   };
 
@@ -106,21 +109,25 @@ export default function DocsPage() {
   };
 
   const clearFilters = () => {
-    setSelectedCategory('all');
+    setSelectedCategory("all");
     setSelectedTag(null);
-    setSearchQuery('');
+    setSearchQuery("");
   };
 
-  const hasActiveFilters = selectedCategory !== 'all' || selectedTag !== null || searchQuery !== '';
+  const hasActiveFilters =
+    selectedCategory !== "all" || selectedTag !== null || searchQuery !== "";
 
   // Group docs by category for display
-  const docsByCategory = filteredDocs.reduce((acc, doc) => {
-    if (!acc[doc.category]) {
-      acc[doc.category] = [];
-    }
-    acc[doc.category].push(doc);
-    return acc;
-  }, {} as Record<KnowledgeDocCategory, KnowledgeDoc[]>);
+  const docsByCategory = filteredDocs.reduce(
+    (acc, doc) => {
+      if (!acc[doc.category]) {
+        acc[doc.category] = [];
+      }
+      acc[doc.category].push(doc);
+      return acc;
+    },
+    {} as Record<KnowledgeDocCategory, KnowledgeDoc[]>,
+  );
 
   return (
     <>
@@ -128,8 +135,8 @@ export default function DocsPage() {
         title="Centre de Documentation"
         description="Consultez tous les documents, guides et templates pour mieux accompagner vos prospects"
         breadcrumbs={[
-          { label: 'Accueil', href: '/dashboard' },
-          { label: 'Documentation' },
+          { label: "Accueil", href: "/dashboard" },
+          { label: "Documentation" },
         ]}
       />
       <PageContainer>
@@ -144,11 +151,15 @@ export default function DocsPage() {
             {/* Category filters */}
             <div className="flex items-center gap-2 flex-wrap">
               <Filter className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm font-medium text-muted-foreground">Categories:</span>
+              <span className="text-sm font-medium text-muted-foreground">
+                Categories:
+              </span>
               {categories.map((cat) => (
                 <Button
                   key={cat.value}
-                  variant={selectedCategory === cat.value ? 'default' : 'outline'}
+                  variant={
+                    selectedCategory === cat.value ? "default" : "outline"
+                  }
                   size="sm"
                   onClick={() => handleCategoryChange(cat.value)}
                 >
@@ -160,11 +171,13 @@ export default function DocsPage() {
             {/* Tag filters */}
             {allTags.length > 0 && (
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-sm font-medium text-muted-foreground">Tags:</span>
+                <span className="text-sm font-medium text-muted-foreground">
+                  Tags:
+                </span>
                 {allTags.map((tag) => (
                   <Badge
                     key={tag}
-                    variant={selectedTag === tag ? 'default' : 'outline'}
+                    variant={selectedTag === tag ? "default" : "outline"}
                     className="cursor-pointer hover:bg-primary/90"
                     onClick={() => handleTagClick(tag)}
                   >
@@ -190,7 +203,8 @@ export default function DocsPage() {
 
           {/* Results count */}
           <div className="text-sm text-muted-foreground">
-            {filteredDocs.length} document{filteredDocs.length !== 1 ? 's' : ''} trouv{filteredDocs.length !== 1 ? 'és' : 'é'}
+            {filteredDocs.length} document{filteredDocs.length !== 1 ? "s" : ""}{" "}
+            trouv{filteredDocs.length !== 1 ? "és" : "é"}
           </div>
 
           {/* Documents */}
@@ -203,27 +217,30 @@ export default function DocsPage() {
               title="Aucun document trouvé"
               description={
                 hasActiveFilters
-                  ? 'Essayez de modifier vos filtres de recherche'
-                  : 'Aucun document disponible pour le moment'
+                  ? "Essayez de modifier vos filtres de recherche"
+                  : "Aucun document disponible pour le moment"
               }
               icon={<BookOpen className="h-12 w-12" />}
             />
           ) : (
             <div className="space-y-8">
-              {selectedCategory === 'all' ? (
+              {selectedCategory === "all" ? (
                 // Group by category
-                Object.entries(docsByCategory).map(([category, categoryDocs]) => (
-                  <div key={category} className="space-y-4">
-                    <h2 className="text-xl font-semibold">
-                      {categories.find((c) => c.value === category)?.label || category}
-                    </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {categoryDocs.map((doc) => (
-                        <DocCard key={doc.id} doc={doc} />
-                      ))}
+                Object.entries(docsByCategory).map(
+                  ([category, categoryDocs]) => (
+                    <div key={category} className="space-y-4">
+                      <h2 className="text-xl font-semibold">
+                        {categories.find((c) => c.value === category)?.label ||
+                          category}
+                      </h2>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {categoryDocs.map((doc) => (
+                          <DocCard key={doc.id} doc={doc} />
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ))
+                  ),
+                )
               ) : (
                 // Single list view
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getSupabaseClient } from '@/lib/supabase';
+import { NextRequest, NextResponse } from "next/server";
+import { getSupabaseClient } from "@/lib/supabase";
 
 // GET - Liste tous les documents de documentation avec recherche et filtres
 export async function GET(request: NextRequest) {
@@ -7,28 +7,28 @@ export async function GET(request: NextRequest) {
     const supabase = getSupabaseClient();
     const { searchParams } = new URL(request.url);
 
-    const search = searchParams.get('search');
-    const category = searchParams.get('category');
-    const tag = searchParams.get('tag');
+    const search = searchParams.get("search");
+    const category = searchParams.get("category");
+    const tag = searchParams.get("tag");
 
     let query = supabase
-      .from('knowledge_docs')
-      .select('*')
-      .order('updated_at', { ascending: false });
+      .from("knowledge_docs")
+      .select("*")
+      .order("updated_at", { ascending: false });
 
     // Recherche full-text sur titre et contenu
-    if (search && search.trim() !== '') {
+    if (search && search.trim() !== "") {
       query = query.or(`title.ilike.%${search}%,content.ilike.%${search}%`);
     }
 
     // Filtre par catégorie
-    if (category && category !== 'all') {
-      query = query.eq('category', category);
+    if (category && category !== "all") {
+      query = query.eq("category", category);
     }
 
     // Filtre par tag
     if (tag) {
-      query = query.contains('tags', [tag]);
+      query = query.contains("tags", [tag]);
     }
 
     const { data, error } = await query;
@@ -36,13 +36,13 @@ export async function GET(request: NextRequest) {
     if (error) throw error;
     return NextResponse.json(data);
   } catch (error) {
-    console.error('GET /api/knowledge-docs error:', error);
+    console.error("GET /api/knowledge-docs error:", error);
     return NextResponse.json(
       {
-        error: 'Internal server error',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        error: "Internal server error",
+        details: error instanceof Error ? error.message : "Unknown error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -57,18 +57,18 @@ export async function POST(request: NextRequest) {
 
     if (!title || !category || !content) {
       return NextResponse.json(
-        { error: 'title, category, and content are required' },
-        { status: 400 }
+        { error: "title, category, and content are required" },
+        { status: 400 },
       );
     }
 
     const { data, error } = await supabase
-      .from('knowledge_docs')
+      .from("knowledge_docs")
       .insert({
         title,
         category,
         content,
-        tags: tags || []
+        tags: tags || [],
       })
       .select()
       .single();
@@ -76,13 +76,13 @@ export async function POST(request: NextRequest) {
     if (error) throw error;
     return NextResponse.json(data, { status: 201 });
   } catch (error) {
-    console.error('POST /api/knowledge-docs error:', error);
+    console.error("POST /api/knowledge-docs error:", error);
     return NextResponse.json(
       {
-        error: 'Internal server error',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        error: "Internal server error",
+        details: error instanceof Error ? error.message : "Unknown error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -1,11 +1,17 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Prospect, Exchange, Document } from '@/types/database.types';
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardDescription,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Prospect, Exchange, Document } from "@/types/database.types";
 
 interface DashboardStats {
   toContactToday: number;
@@ -30,20 +36,23 @@ export function DashboardCommercial() {
         setLoading(true);
 
         // Fetch prospects
-        const prospectsRes = await fetch('/api/prospects');
+        const prospectsRes = await fetch("/api/prospects");
         const prospects: Prospect[] = await prospectsRes.json();
 
         // Calculate stats
-        const today = new Date().toISOString().split('T')[0];
-        const toContactToday = prospects.filter(p =>
-          p.status === 'lead' || p.status === 'contacted'
+        const today = new Date().toISOString().split("T")[0];
+        const toContactToday = prospects.filter(
+          (p) => p.status === "lead" || p.status === "contacted",
         ).length;
 
-        const inDiscussion = prospects.filter(p =>
-          p.status === 'qualified' || p.status === 'proposal' || p.status === 'negotiation'
+        const inDiscussion = prospects.filter(
+          (p) =>
+            p.status === "qualified" ||
+            p.status === "proposal" ||
+            p.status === "negotiation",
         ).length;
 
-        const won = prospects.filter(p => p.status === 'won').length;
+        const won = prospects.filter((p) => p.status === "won").length;
         const total = prospects.length;
         const conversionRate = total > 0 ? Math.round((won / total) * 100) : 0;
 
@@ -55,25 +64,25 @@ export function DashboardCommercial() {
 
         // Get priority prospects (first 5 with lead or contacted status)
         const priority = prospects
-          .filter(p => p.status === 'lead' || p.status === 'contacted')
+          .filter((p) => p.status === "lead" || p.status === "contacted")
           .slice(0, 5);
         setPriorityProspects(priority);
 
         // Fetch recent exchanges
-        const exchangesRes = await fetch('/api/exchanges');
+        const exchangesRes = await fetch("/api/exchanges");
         if (exchangesRes.ok) {
           const exchanges: Exchange[] = await exchangesRes.json();
           setRecentExchanges(exchanges.slice(0, 5));
         }
 
         // Fetch suggested docs
-        const docsRes = await fetch('/api/docs');
+        const docsRes = await fetch("/api/docs");
         if (docsRes.ok) {
           const docs: Document[] = await docsRes.json();
           setSuggestedDocs(docs.slice(0, 3));
         }
       } catch (error) {
-        console.error('Error fetching dashboard data:', error);
+        console.error("Error fetching dashboard data:", error);
       } finally {
         setLoading(false);
       }
@@ -83,43 +92,46 @@ export function DashboardCommercial() {
   }, []);
 
   const getStatusBadge = (status?: string) => {
-    const variants: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
-      lead: 'default',
-      contacted: 'secondary',
-      qualified: 'outline',
-      proposal: 'outline',
-      negotiation: 'outline',
-      won: 'default',
-      lost: 'destructive',
+    const variants: Record<
+      string,
+      "default" | "secondary" | "destructive" | "outline"
+    > = {
+      lead: "default",
+      contacted: "secondary",
+      qualified: "outline",
+      proposal: "outline",
+      negotiation: "outline",
+      won: "default",
+      lost: "destructive",
     };
     return (
-      <Badge variant={variants[status || 'lead'] || 'default'}>
-        {status || 'lead'}
+      <Badge variant={variants[status || "lead"] || "default"}>
+        {status || "lead"}
       </Badge>
     );
   };
 
   const getExchangeTypeBadge = (type: string) => {
     const icons: Record<string, string> = {
-      email: '📧',
-      call: '📞',
-      meeting: '👥',
-      linkedin: '💼',
-      other: '📝',
+      email: "📧",
+      call: "📞",
+      meeting: "👥",
+      linkedin: "💼",
+      other: "📝",
     };
     return (
       <Badge variant="outline">
-        {icons[type] || '📝'} {type}
+        {icons[type] || "📝"} {type}
       </Badge>
     );
   };
 
   const formatDate = (date?: string) => {
-    if (!date) return 'N/A';
-    return new Date(date).toLocaleDateString('fr-FR', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
+    if (!date) return "N/A";
+    return new Date(date).toLocaleDateString("fr-FR", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
     });
   };
 
@@ -127,7 +139,7 @@ export function DashboardCommercial() {
     return (
       <div className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[1, 2, 3].map(i => (
+          {[1, 2, 3].map((i) => (
             <Card key={i} className="animate-pulse">
               <CardHeader>
                 <div className="h-4 bg-gray-200 rounded w-1/2"></div>
@@ -193,9 +205,7 @@ export function DashboardCommercial() {
       <Card>
         <CardHeader>
           <CardTitle>Prospects prioritaires à appeler</CardTitle>
-          <CardDescription>
-            Prospects urgents et haute priorité
-          </CardDescription>
+          <CardDescription>Prospects urgents et haute priorité</CardDescription>
         </CardHeader>
         <CardContent>
           {priorityProspects.length === 0 ? (
@@ -204,7 +214,7 @@ export function DashboardCommercial() {
             </p>
           ) : (
             <div className="space-y-4">
-              {priorityProspects.map(prospect => (
+              {priorityProspects.map((prospect) => (
                 <div
                   key={prospect.id}
                   className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent transition-colors"
@@ -215,8 +225,12 @@ export function DashboardCommercial() {
                       {getStatusBadge(prospect.status)}
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      {prospect.company_name && <span>{prospect.company_name}</span>}
-                      {prospect.email && <span className="ml-2">• {prospect.email}</span>}
+                      {prospect.company_name && (
+                        <span>{prospect.company_name}</span>
+                      )}
+                      {prospect.email && (
+                        <span className="ml-2">• {prospect.email}</span>
+                      )}
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -250,7 +264,7 @@ export function DashboardCommercial() {
               </p>
             ) : (
               <div className="space-y-3">
-                {recentExchanges.map(exchange => (
+                {recentExchanges.map((exchange) => (
                   <div
                     key={exchange.id}
                     className="p-3 border rounded-lg space-y-2"
@@ -261,12 +275,15 @@ export function DashboardCommercial() {
                           {getExchangeTypeBadge(exchange.type)}
                           {exchange.direction && (
                             <Badge variant="secondary" className="text-xs">
-                              {exchange.direction === 'inbound' ? '⬇️' : '⬆️'} {exchange.direction}
+                              {exchange.direction === "inbound" ? "⬇️" : "⬆️"}{" "}
+                              {exchange.direction}
                             </Badge>
                           )}
                         </div>
                         {exchange.subject && (
-                          <p className="font-medium text-sm">{exchange.subject}</p>
+                          <p className="font-medium text-sm">
+                            {exchange.subject}
+                          </p>
                         )}
                       </div>
                       <span className="text-xs text-muted-foreground whitespace-nowrap ml-2">
@@ -289,7 +306,9 @@ export function DashboardCommercial() {
         <Card>
           <CardHeader>
             <CardTitle>Documents suggérés</CardTitle>
-            <CardDescription>Documents utiles pour vos prospects</CardDescription>
+            <CardDescription>
+              Documents utiles pour vos prospects
+            </CardDescription>
           </CardHeader>
           <CardContent>
             {suggestedDocs.length === 0 ? (
@@ -298,7 +317,7 @@ export function DashboardCommercial() {
               </p>
             ) : (
               <div className="space-y-3">
-                {suggestedDocs.map(doc => (
+                {suggestedDocs.map((doc) => (
                   <div
                     key={doc.id}
                     className="p-3 border rounded-lg space-y-2 hover:bg-accent transition-colors"
@@ -312,7 +331,8 @@ export function DashboardCommercial() {
                           </p>
                         )}
                         <p className="text-xs text-muted-foreground">
-                          {doc.filename} • {(doc.file_size / 1024).toFixed(0)} KB
+                          {doc.filename} • {(doc.file_size / 1024).toFixed(0)}{" "}
+                          KB
                         </p>
                       </div>
                     </div>

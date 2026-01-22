@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/lib/supabase/client';
-import type { Prospect, ProspectFormData } from '@/types';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase/client";
+import type { Prospect, ProspectFormData } from "@/types";
 
 export function useProspects() {
   return useQuery({
-    queryKey: ['prospects'],
+    queryKey: ["prospects"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('prospects')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .from("prospects")
+        .select("*")
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
       return data as Prospect[];
@@ -21,12 +21,12 @@ export function useProspects() {
 
 export function useProspect(id: string) {
   return useQuery({
-    queryKey: ['prospect', id],
+    queryKey: ["prospect", id],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('prospects')
-        .select('*')
-        .eq('id', id)
+        .from("prospects")
+        .select("*")
+        .eq("id", id)
         .single();
 
       if (error) throw error;
@@ -42,7 +42,7 @@ export function useCreateProspect() {
   return useMutation({
     mutationFn: async (data: ProspectFormData) => {
       const { data: prospect, error } = await supabase
-        .from('prospects')
+        .from("prospects")
         .insert(data)
         .select()
         .single();
@@ -51,7 +51,7 @@ export function useCreateProspect() {
       return prospect;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['prospects'] });
+      queryClient.invalidateQueries({ queryKey: ["prospects"] });
     },
   });
 }
@@ -60,11 +60,17 @@ export function useUpdateProspect() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: Partial<ProspectFormData> }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: Partial<ProspectFormData>;
+    }) => {
       const { data: prospect, error } = await supabase
-        .from('prospects')
+        .from("prospects")
         .update(data)
-        .eq('id', id)
+        .eq("id", id)
         .select()
         .single();
 
@@ -72,8 +78,8 @@ export function useUpdateProspect() {
       return prospect;
     },
     onSuccess: (_, { id }) => {
-      queryClient.invalidateQueries({ queryKey: ['prospects'] });
-      queryClient.invalidateQueries({ queryKey: ['prospect', id] });
+      queryClient.invalidateQueries({ queryKey: ["prospects"] });
+      queryClient.invalidateQueries({ queryKey: ["prospect", id] });
     },
   });
 }
@@ -83,15 +89,12 @@ export function useDeleteProspect() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase
-        .from('prospects')
-        .delete()
-        .eq('id', id);
+      const { error } = await supabase.from("prospects").delete().eq("id", id);
 
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['prospects'] });
+      queryClient.invalidateQueries({ queryKey: ["prospects"] });
     },
   });
 }

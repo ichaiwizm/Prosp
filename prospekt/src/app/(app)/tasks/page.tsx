@@ -1,8 +1,8 @@
-import { Header } from '@/components/layout/header';
-import { PageContainer } from '@/components/layout/page-container';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Plus, Filter, Calendar } from 'lucide-react';
+import { Header } from "@/components/layout/header";
+import { PageContainer } from "@/components/layout/page-container";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Plus, Filter, Calendar } from "lucide-react";
 
 export default function TasksPage() {
   return (
@@ -11,8 +11,8 @@ export default function TasksPage() {
         title="Tâches"
         description="Gérez vos activités"
         breadcrumbs={[
-          { label: 'Accueil', href: '/dashboard' },
-          { label: 'Tâches' },
+          { label: "Accueil", href: "/dashboard" },
+          { label: "Tâches" },
         ]}
         actions={
           <div className="flex items-center gap-2">
@@ -35,7 +35,9 @@ export default function TasksPage() {
         <Card className="p-12">
           <div className="text-center text-muted-foreground">
             <p className="text-lg mb-2">Aucune tâche pour le moment</p>
-            <p className="text-sm">Commencez par ajouter votre première tâche</p>
+            <p className="text-sm">
+              Commencez par ajouter votre première tâche
+            </p>
           </div>
         </Card>
       </PageContainer>

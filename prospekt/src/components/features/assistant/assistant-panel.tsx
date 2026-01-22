@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useState, useRef, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { LoadingSpinner } from '@/components/shared/LoadingSpinner';
-import { AssistantMessage, AssistantContext, AssistantResponse } from '@/types';
+import { useState, useRef, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
+import { AssistantMessage, AssistantContext, AssistantResponse } from "@/types";
 import {
   X,
   Send,
@@ -17,11 +17,11 @@ import {
   HelpCircle,
   AlertTriangle,
   BookOpen,
-  Loader2
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
-import { fr } from 'date-fns/locale';
+  Loader2,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 
 interface AssistantPanelProps {
   context: AssistantContext;
@@ -30,7 +30,7 @@ interface AssistantPanelProps {
 
 export function AssistantPanel({ context, onClose }: AssistantPanelProps) {
   const [messages, setMessages] = useState<AssistantMessage[]>([]);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [systemInfo, setSystemInfo] = useState<{
     callObjective?: string;
@@ -53,34 +53,35 @@ export function AssistantPanel({ context, onClose }: AssistantPanelProps) {
   }, [messages]);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const initializeConversation = async () => {
     if (!context.prospectId || !context.prospect) return;
 
     const welcomeMessage: AssistantMessage = {
-      role: 'assistant',
-      content: `Bonjour! Je suis votre assistant IA pour vous aider avec ${context.prospect.name}. Je peux vous aider à préparer votre appel, répondre à vos questions, et gérer les objections.`,
-      timestamp: new Date().toISOString()
+      role: "assistant",
+      content: `Bonjour! Je suis votre assistant IA pour vous aider avec ${context.prospect.contact_name}. Je peux vous aider à préparer votre appel, répondre à vos questions, et gérer les objections.`,
+      timestamp: new Date().toISOString(),
     };
 
     setMessages([welcomeMessage]);
 
     // Generate system information
     try {
-      const response = await fetch('/api/assistant', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/assistant", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          message: 'Analyse ce prospect et génère: 1) Un objectif pour l\'appel 2) 3 questions stratégiques à poser 3) 3 objections possibles',
+          message:
+            "Analyse ce prospect et génère: 1) Un objectif pour l'appel 2) 3 questions stratégiques à poser 3) 3 objections possibles",
           prospectId: context.prospectId,
           context: JSON.stringify({
             prospect: context.prospect,
             exchanges: context.exchanges,
-            notes: context.notes
-          })
-        })
+            notes: context.notes,
+          }),
+        }),
       });
 
       if (response.ok) {
@@ -89,9 +90,9 @@ export function AssistantPanel({ context, onClose }: AssistantPanelProps) {
         // Parse the response to extract structured info
         // For now, just display it as a message
         const systemMessage: AssistantMessage = {
-          role: 'system',
+          role: "system",
           content: data.message,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
 
         setMessages((prev) => [...prev, systemMessage]);
@@ -101,11 +102,11 @@ export function AssistantPanel({ context, onClose }: AssistantPanelProps) {
           callObjective: context.callObjective,
           suggestedQuestions: context.suggestedQuestions || [],
           possibleObjections: context.possibleObjections || [],
-          relevantDocs: context.relevantDocs || []
+          relevantDocs: context.relevantDocs || [],
         });
       }
     } catch (error) {
-      console.error('Error initializing conversation:', error);
+      console.error("Error initializing conversation:", error);
     }
   };
 
@@ -113,19 +114,19 @@ export function AssistantPanel({ context, onClose }: AssistantPanelProps) {
     if (!input.trim() || loading) return;
 
     const userMessage: AssistantMessage = {
-      role: 'user',
+      role: "user",
       content: input.trim(),
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     setMessages((prev) => [...prev, userMessage]);
-    setInput('');
+    setInput("");
     setLoading(true);
 
     try {
-      const response = await fetch('/api/assistant', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/assistant", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: input.trim(),
           prospectId: context.prospectId,
@@ -133,31 +134,31 @@ export function AssistantPanel({ context, onClose }: AssistantPanelProps) {
             prospect: context.prospect,
             exchanges: context.exchanges,
             notes: context.notes,
-            conversationHistory: messages
-          })
-        })
+            conversationHistory: messages,
+          }),
+        }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to get response from assistant');
+        throw new Error("Failed to get response from assistant");
       }
 
       const data: AssistantResponse = await response.json();
 
       const assistantMessage: AssistantMessage = {
-        role: 'assistant',
+        role: "assistant",
         content: data.message,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error("Error sending message:", error);
 
       const errorMessage: AssistantMessage = {
-        role: 'assistant',
-        content: 'Désolé, une erreur s\'est produite. Veuillez réessayer.',
-        timestamp: new Date().toISOString()
+        role: "assistant",
+        content: "Désolé, une erreur s'est produite. Veuillez réessayer.",
+        timestamp: new Date().toISOString(),
       };
 
       setMessages((prev) => [...prev, errorMessage]);
@@ -168,7 +169,7 @@ export function AssistantPanel({ context, onClose }: AssistantPanelProps) {
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
@@ -188,16 +189,12 @@ export function AssistantPanel({ context, onClose }: AssistantPanelProps) {
                 <CardTitle className="text-xl">Assistant IA</CardTitle>
                 {context.prospect && (
                   <p className="text-sm text-muted-foreground">
-                    Prospect: {context.prospect.name}
+                    Prospect: {context.prospect.contact_name}
                   </p>
                 )}
               </div>
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onClose}
-            >
+            <Button variant="ghost" size="icon" onClick={onClose}>
               <X className="h-5 w-5" />
             </Button>
           </div>
@@ -216,12 +213,23 @@ export function AssistantPanel({ context, onClose }: AssistantPanelProps) {
                     Informations
                   </h3>
                   <div className="space-y-1 text-sm">
-                    <p><span className="text-muted-foreground">Email:</span> {context.prospect.email}</p>
+                    <p>
+                      <span className="text-muted-foreground">Email:</span>{" "}
+                      {context.prospect.email}
+                    </p>
                     {context.prospect.phone && (
-                      <p><span className="text-muted-foreground">Tél:</span> {context.prospect.phone}</p>
+                      <p>
+                        <span className="text-muted-foreground">Tél:</span>{" "}
+                        {context.prospect.phone}
+                      </p>
                     )}
-                    {context.prospect.company && (
-                      <p><span className="text-muted-foreground">Entreprise:</span> {context.prospect.company}</p>
+                    {context.prospect.company_name && (
+                      <p>
+                        <span className="text-muted-foreground">
+                          Entreprise:
+                        </span>{" "}
+                        {context.prospect.company_name}
+                      </p>
                     )}
                     <Badge variant="outline">{context.prospect.status}</Badge>
                   </div>
@@ -235,66 +243,77 @@ export function AssistantPanel({ context, onClose }: AssistantPanelProps) {
                     <Target className="h-4 w-4" />
                     Objectif de l'appel
                   </h3>
-                  <p className="text-sm text-muted-foreground">{systemInfo.callObjective}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {systemInfo.callObjective}
+                  </p>
                 </div>
               )}
 
               {/* Suggested questions */}
-              {systemInfo.suggestedQuestions && systemInfo.suggestedQuestions.length > 0 && (
-                <div className="space-y-2">
-                  <h3 className="font-semibold text-sm flex items-center gap-2">
-                    <HelpCircle className="h-4 w-4" />
-                    Questions à poser
-                  </h3>
-                  <ul className="space-y-1.5">
-                    {systemInfo.suggestedQuestions.map((q, i) => (
-                      <li key={i} className="text-sm text-muted-foreground list-disc ml-4">
-                        {q}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+              {systemInfo.suggestedQuestions &&
+                systemInfo.suggestedQuestions.length > 0 && (
+                  <div className="space-y-2">
+                    <h3 className="font-semibold text-sm flex items-center gap-2">
+                      <HelpCircle className="h-4 w-4" />
+                      Questions à poser
+                    </h3>
+                    <ul className="space-y-1.5">
+                      {systemInfo.suggestedQuestions.map((q, i) => (
+                        <li
+                          key={i}
+                          className="text-sm text-muted-foreground list-disc ml-4"
+                        >
+                          {q}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
               {/* Possible objections */}
-              {systemInfo.possibleObjections && systemInfo.possibleObjections.length > 0 && (
-                <div className="space-y-2">
-                  <h3 className="font-semibold text-sm flex items-center gap-2">
-                    <AlertTriangle className="h-4 w-4" />
-                    Objections possibles
-                  </h3>
-                  <ul className="space-y-1.5">
-                    {systemInfo.possibleObjections.map((obj, i) => (
-                      <li key={i} className="text-sm text-muted-foreground list-disc ml-4">
-                        {obj}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+              {systemInfo.possibleObjections &&
+                systemInfo.possibleObjections.length > 0 && (
+                  <div className="space-y-2">
+                    <h3 className="font-semibold text-sm flex items-center gap-2">
+                      <AlertTriangle className="h-4 w-4" />
+                      Objections possibles
+                    </h3>
+                    <ul className="space-y-1.5">
+                      {systemInfo.possibleObjections.map((obj, i) => (
+                        <li
+                          key={i}
+                          className="text-sm text-muted-foreground list-disc ml-4"
+                        >
+                          {obj}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
               {/* Relevant docs */}
-              {systemInfo.relevantDocs && systemInfo.relevantDocs.length > 0 && (
-                <div className="space-y-2">
-                  <h3 className="font-semibold text-sm flex items-center gap-2">
-                    <BookOpen className="h-4 w-4" />
-                    Documents utiles
-                  </h3>
-                  <div className="space-y-1.5">
-                    {systemInfo.relevantDocs.map((doc) => (
-                      <a
-                        key={doc.id}
-                        href={`/docs/${doc.id}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block text-sm text-primary hover:underline"
-                      >
-                        {doc.title}
-                      </a>
-                    ))}
+              {systemInfo.relevantDocs &&
+                systemInfo.relevantDocs.length > 0 && (
+                  <div className="space-y-2">
+                    <h3 className="font-semibold text-sm flex items-center gap-2">
+                      <BookOpen className="h-4 w-4" />
+                      Documents utiles
+                    </h3>
+                    <div className="space-y-1.5">
+                      {systemInfo.relevantDocs.map((doc) => (
+                        <a
+                          key={doc.id}
+                          href={`/docs/${doc.id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block text-sm text-primary hover:underline"
+                        >
+                          {doc.title}
+                        </a>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
               {/* Recent exchanges */}
               {context.exchanges && context.exchanges.length > 0 && (
@@ -325,11 +344,11 @@ export function AssistantPanel({ context, onClose }: AssistantPanelProps) {
                 <div
                   key={index}
                   className={cn(
-                    'flex gap-3',
-                    message.role === 'user' ? 'justify-end' : 'justify-start'
+                    "flex gap-3",
+                    message.role === "user" ? "justify-end" : "justify-start",
                   )}
                 >
-                  {message.role !== 'user' && (
+                  {message.role !== "user" && (
                     <div className="flex items-start justify-center w-8 h-8 rounded-full bg-primary/10 shrink-0 mt-1">
                       <Bot className="h-4 w-4 text-primary mt-2" />
                     </div>
@@ -337,26 +356,34 @@ export function AssistantPanel({ context, onClose }: AssistantPanelProps) {
 
                   <div
                     className={cn(
-                      'max-w-[80%] rounded-lg px-4 py-3 space-y-2',
-                      message.role === 'user'
-                        ? 'bg-primary text-primary-foreground'
-                        : message.role === 'system'
-                        ? 'bg-muted/50 border'
-                        : 'bg-muted'
+                      "max-w-[80%] rounded-lg px-4 py-3 space-y-2",
+                      message.role === "user"
+                        ? "bg-primary text-primary-foreground"
+                        : message.role === "system"
+                          ? "bg-muted/50 border"
+                          : "bg-muted",
                     )}
                   >
-                    <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                    <p className="text-sm whitespace-pre-wrap">
+                      {message.content}
+                    </p>
                     {message.timestamp && (
-                      <p className={cn(
-                        'text-xs',
-                        message.role === 'user' ? 'text-primary-foreground/70' : 'text-muted-foreground'
-                      )}>
-                        {format(new Date(message.timestamp), 'HH:mm', { locale: fr })}
+                      <p
+                        className={cn(
+                          "text-xs",
+                          message.role === "user"
+                            ? "text-primary-foreground/70"
+                            : "text-muted-foreground",
+                        )}
+                      >
+                        {format(new Date(message.timestamp), "HH:mm", {
+                          locale: fr,
+                        })}
                       </p>
                     )}
                   </div>
 
-                  {message.role === 'user' && (
+                  {message.role === "user" && (
                     <div className="flex items-start justify-center w-8 h-8 rounded-full bg-primary shrink-0 mt-1">
                       <User className="h-4 w-4 text-primary-foreground mt-2" />
                     </div>
@@ -370,7 +397,9 @@ export function AssistantPanel({ context, onClose }: AssistantPanelProps) {
                     <Loader2 className="h-4 w-4 text-primary animate-spin mt-2" />
                   </div>
                   <div className="bg-muted rounded-lg px-4 py-3">
-                    <p className="text-sm text-muted-foreground">En train d'écrire...</p>
+                    <p className="text-sm text-muted-foreground">
+                      En train d'écrire...
+                    </p>
                   </div>
                 </div>
               )}

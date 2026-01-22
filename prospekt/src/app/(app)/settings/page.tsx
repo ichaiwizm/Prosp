@@ -1,6 +1,6 @@
-import { Header } from '@/components/layout/header';
-import { PageContainer } from '@/components/layout/page-container';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Header } from "@/components/layout/header";
+import { PageContainer } from "@/components/layout/page-container";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 export default function SettingsPage() {
   return (
@@ -9,8 +9,8 @@ export default function SettingsPage() {
         title="Paramètres"
         description="Gérez vos préférences de compte"
         breadcrumbs={[
-          { label: 'Accueil', href: '/dashboard' },
-          { label: 'Paramètres' },
+          { label: "Accueil", href: "/dashboard" },
+          { label: "Paramètres" },
         ]}
       />
       <PageContainer maxWidth="lg">

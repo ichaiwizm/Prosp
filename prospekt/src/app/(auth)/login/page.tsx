@@ -1,15 +1,22 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useAuth } from '@/hooks/useAuth';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
-import { AlertCircle, Lock, Mail, Loader2 } from 'lucide-react';
+import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import { AlertCircle, Lock, Mail, Loader2 } from "lucide-react";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [emailError, setEmailError] = useState<string | null>(null);
@@ -19,12 +26,12 @@ export default function LoginPage() {
 
   const validateEmail = (email: string): boolean => {
     if (!email) {
-      setEmailError('Email requis');
+      setEmailError("Email requis");
       return false;
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      setEmailError('Format email invalide');
+      setEmailError("Format email invalide");
       return false;
     }
     setEmailError(null);
@@ -33,11 +40,11 @@ export default function LoginPage() {
 
   const validatePassword = (password: string): boolean => {
     if (!password) {
-      setPasswordError('Mot de passe requis');
+      setPasswordError("Mot de passe requis");
       return false;
     }
     if (password.length < 6) {
-      setPasswordError('Le mot de passe doit contenir au moins 6 caractères');
+      setPasswordError("Le mot de passe doit contenir au moins 6 caractères");
       return false;
     }
     setPasswordError(null);
@@ -62,17 +69,18 @@ export default function LoginPage() {
       await login(email, password);
       // Redirection handled by login function
     } catch (err: any) {
-      console.error('Login error:', err);
+      console.error("Login error:", err);
 
       // Map common Supabase errors to user-friendly messages
-      let errorMessage = 'Une erreur est survenue lors de la connexion';
+      let errorMessage = "Une erreur est survenue lors de la connexion";
 
-      if (err.message?.includes('Invalid login credentials')) {
-        errorMessage = 'Email ou mot de passe incorrect';
-      } else if (err.message?.includes('Email not confirmed')) {
-        errorMessage = 'Veuillez confirmer votre email avant de vous connecter';
-      } else if (err.message?.includes('Too many requests')) {
-        errorMessage = 'Trop de tentatives. Veuillez réessayer dans quelques minutes';
+      if (err.message?.includes("Invalid login credentials")) {
+        errorMessage = "Email ou mot de passe incorrect";
+      } else if (err.message?.includes("Email not confirmed")) {
+        errorMessage = "Veuillez confirmer votre email avant de vous connecter";
+      } else if (err.message?.includes("Too many requests")) {
+        errorMessage =
+          "Trop de tentatives. Veuillez réessayer dans quelques minutes";
       } else if (err.message) {
         errorMessage = err.message;
       }
@@ -83,13 +91,13 @@ export default function LoginPage() {
     }
   };
 
-  const fillTestCredentials = (role: 'TECH' | 'COMMERCIAL') => {
-    if (role === 'TECH') {
-      setEmail('ichai@prospekt.app');
-      setPassword('password123');
+  const fillTestCredentials = (role: "TECH" | "COMMERCIAL") => {
+    if (role === "TECH") {
+      setEmail("ichai@prospekt.app");
+      setPassword("password123");
     } else {
-      setEmail('manu@prospekt.app');
-      setPassword('password123');
+      setEmail("manu@prospekt.app");
+      setPassword("password123");
     }
     setError(null);
     setEmailError(null);
@@ -126,7 +134,10 @@ export default function LoginPage() {
             )}
 
             <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium leading-none">
+              <label
+                htmlFor="email"
+                className="text-sm font-medium leading-none"
+              >
                 Email
               </label>
               <div className="relative">
@@ -141,7 +152,7 @@ export default function LoginPage() {
                     if (emailError) validateEmail(e.target.value);
                   }}
                   onBlur={(e) => validateEmail(e.target.value)}
-                  className={`pl-9 ${emailError ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                  className={`pl-9 ${emailError ? "border-destructive focus-visible:ring-destructive" : ""}`}
                   disabled={loading}
                   autoComplete="email"
                 />
@@ -152,7 +163,10 @@ export default function LoginPage() {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium leading-none">
+              <label
+                htmlFor="password"
+                className="text-sm font-medium leading-none"
+              >
                 Mot de passe
               </label>
               <div className="relative">
@@ -167,7 +181,7 @@ export default function LoginPage() {
                     if (passwordError) validatePassword(e.target.value);
                   }}
                   onBlur={(e) => validatePassword(e.target.value)}
-                  className={`pl-9 ${passwordError ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                  className={`pl-9 ${passwordError ? "border-destructive focus-visible:ring-destructive" : ""}`}
                   disabled={loading}
                   autoComplete="current-password"
                 />
@@ -189,7 +203,7 @@ export default function LoginPage() {
                   Connexion en cours...
                 </>
               ) : (
-                'Se connecter'
+                "Se connecter"
               )}
             </Button>
           </form>
@@ -204,7 +218,7 @@ export default function LoginPage() {
               type="button"
               variant="outline"
               size="sm"
-              onClick={() => fillTestCredentials('TECH')}
+              onClick={() => fillTestCredentials("TECH")}
               disabled={loading}
               className="text-xs"
             >
@@ -214,7 +228,7 @@ export default function LoginPage() {
               type="button"
               variant="outline"
               size="sm"
-              onClick={() => fillTestCredentials('COMMERCIAL')}
+              onClick={() => fillTestCredentials("COMMERCIAL")}
               disabled={loading}
               className="text-xs"
             >

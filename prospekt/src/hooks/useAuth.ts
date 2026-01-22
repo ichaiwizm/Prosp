@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase/client';
-import type { User, Session } from '@supabase/supabase-js';
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase/client";
+import type { User, Session } from "@supabase/supabase-js";
 
 export interface AuthError {
   message: string;
@@ -49,10 +49,11 @@ export function useAuth() {
   const login = async (email: string, password: string) => {
     try {
       setError(null);
-      const { data, error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const { data, error: signInError } =
+        await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
 
       if (signInError) {
         const authError: AuthError = {
@@ -63,19 +64,23 @@ export function useAuth() {
         throw authError;
       }
 
-      router.push('/dashboard');
+      router.push("/dashboard");
       router.refresh();
       return data;
     } catch (err) {
       const authError: AuthError = {
-        message: err instanceof Error ? err.message : 'Failed to sign in',
+        message: err instanceof Error ? err.message : "Failed to sign in",
       };
       setError(authError);
       throw authError;
     }
   };
 
-  const signUp = async (email: string, password: string, metadata?: { name?: string }) => {
+  const signUp = async (
+    email: string,
+    password: string,
+    metadata?: { name?: string },
+  ) => {
     try {
       setError(null);
       const { data, error: signUpError } = await supabase.auth.signUp({
@@ -98,7 +103,7 @@ export function useAuth() {
       return data;
     } catch (err) {
       const authError: AuthError = {
-        message: err instanceof Error ? err.message : 'Failed to sign up',
+        message: err instanceof Error ? err.message : "Failed to sign up",
       };
       setError(authError);
       throw authError;
@@ -118,11 +123,11 @@ export function useAuth() {
         throw authError;
       }
 
-      router.push('/login');
+      router.push("/login");
       router.refresh();
     } catch (err) {
       const authError: AuthError = {
-        message: err instanceof Error ? err.message : 'Failed to sign out',
+        message: err instanceof Error ? err.message : "Failed to sign out",
       };
       setError(authError);
       throw authError;
@@ -132,9 +137,12 @@ export function useAuth() {
   const resetPassword = async (email: string) => {
     try {
       setError(null);
-      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth/reset-password`,
-      });
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(
+        email,
+        {
+          redirectTo: `${window.location.origin}/auth/reset-password`,
+        },
+      );
 
       if (resetError) {
         const authError: AuthError = {
@@ -145,7 +153,8 @@ export function useAuth() {
       }
     } catch (err) {
       const authError: AuthError = {
-        message: err instanceof Error ? err.message : 'Failed to reset password',
+        message:
+          err instanceof Error ? err.message : "Failed to reset password",
       };
       setError(authError);
       throw authError;

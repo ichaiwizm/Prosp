@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase/client';
-import type { User } from '@supabase/supabase-js';
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase/client";
+import type { User } from "@supabase/supabase-js";
 
 export interface UserProfile {
   id: string;
   email: string;
   name: string | null;
-  role: 'TECH' | 'COMMERCIAL';
+  role: "TECH" | "COMMERCIAL";
 }
 
 export function useUser() {
@@ -23,7 +23,10 @@ export function useUser() {
     async function loadUserProfile() {
       try {
         // Get current session
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        const {
+          data: { session },
+          error: sessionError,
+        } = await supabase.auth.getSession();
 
         if (sessionError) throw sessionError;
 
@@ -42,9 +45,9 @@ export function useUser() {
 
         // Fetch user profile from users table
         const { data: profileData, error: profileError } = await supabase
-          .from('users')
-          .select('id, email, name, role')
-          .eq('id', session.user.id)
+          .from("users")
+          .select("id, email, name, role")
+          .eq("id", session.user.id)
           .single();
 
         if (profileError) throw profileError;
@@ -54,9 +57,13 @@ export function useUser() {
           setLoading(false);
         }
       } catch (err) {
-        console.error('Error loading user profile:', err);
+        console.error("Error loading user profile:", err);
         if (mounted) {
-          setError(err instanceof Error ? err : new Error('Failed to load user profile'));
+          setError(
+            err instanceof Error
+              ? err
+              : new Error("Failed to load user profile"),
+          );
           setLoading(false);
         }
       }
@@ -81,9 +88,9 @@ export function useUser() {
 
       try {
         const { data: profileData, error: profileError } = await supabase
-          .from('users')
-          .select('id, email, name, role')
-          .eq('id', session.user.id)
+          .from("users")
+          .select("id, email, name, role")
+          .eq("id", session.user.id)
           .single();
 
         if (profileError) throw profileError;
@@ -93,9 +100,13 @@ export function useUser() {
           setLoading(false);
         }
       } catch (err) {
-        console.error('Error loading user profile:', err);
+        console.error("Error loading user profile:", err);
         if (mounted) {
-          setError(err instanceof Error ? err : new Error('Failed to load user profile'));
+          setError(
+            err instanceof Error
+              ? err
+              : new Error("Failed to load user profile"),
+          );
           setLoading(false);
         }
       }

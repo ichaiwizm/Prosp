@@ -1,5 +1,5 @@
-import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface PaginationProps {
   currentPage: number;
@@ -22,7 +22,8 @@ export function Pagination({
   return (
     <div className="flex items-center justify-between px-2">
       <div className="text-sm text-muted-foreground">
-        Affichage de {startItem} \u00e0 {endItem} sur {totalItems} r\u00e9sultats
+        Affichage de {startItem} \u00e0 {endItem} sur {totalItems}{" "}
+        r\u00e9sultats
       </div>
 
       <div className="flex items-center gap-2">
@@ -46,7 +47,7 @@ export function Pagination({
               return (
                 <Button
                   key={page}
-                  variant={page === currentPage ? 'default' : 'outline'}
+                  variant={page === currentPage ? "default" : "outline"}
                   size="sm"
                   onClick={() => onPageChange(page)}
                   className="min-w-9"
@@ -55,7 +56,11 @@ export function Pagination({
                 </Button>
               );
             } else if (page === currentPage - 2 || page === currentPage + 2) {
-              return <span key={page} className="px-2 text-muted-foreground">...</span>;
+              return (
+                <span key={page} className="px-2 text-muted-foreground">
+                  ...
+                </span>
+              );
             }
             return null;
           })}

@@ -1,8 +1,8 @@
-import { Header } from '@/components/layout/header';
-import { PageContainer } from '@/components/layout/page-container';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Plus, Filter, LayoutGrid } from 'lucide-react';
+import { Header } from "@/components/layout/header";
+import { PageContainer } from "@/components/layout/page-container";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Plus, Filter, LayoutGrid } from "lucide-react";
 
 export default function DealsPage() {
   return (
@@ -11,8 +11,8 @@ export default function DealsPage() {
         title="Deals"
         description="Suivez votre pipeline de ventes"
         breadcrumbs={[
-          { label: 'Accueil', href: '/dashboard' },
-          { label: 'Deals' },
+          { label: "Accueil", href: "/dashboard" },
+          { label: "Deals" },
         ]}
         actions={
           <div className="flex items-center gap-2">

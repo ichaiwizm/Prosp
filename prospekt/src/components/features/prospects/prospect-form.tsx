@@ -1,14 +1,26 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { prospectsApi } from '@/lib/api-client';
-import { toast } from 'sonner';
-import type { Prospect, CreateProspectRequest } from '@/types/database.types';
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { prospectsApi } from "@/lib/api-client";
+import { toast } from "sonner";
+import type { Prospect, CreateProspectRequest } from "@/types/database.types";
 
 interface ProspectFormProps {
   open: boolean;
@@ -17,19 +29,24 @@ interface ProspectFormProps {
   initialData?: Prospect;
 }
 
-export function ProspectForm({ open, onOpenChange, onSuccess, initialData }: ProspectFormProps) {
+export function ProspectForm({
+  open,
+  onOpenChange,
+  onSuccess,
+  initialData,
+}: ProspectFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<CreateProspectRequest>({
-    company_name: initialData?.company_name || '',
-    contact_name: initialData?.contact_name || '',
-    email: initialData?.email || '',
-    phone: initialData?.phone || '',
-    website: initialData?.website || '',
-    status: initialData?.status || 'lead',
-    priority: initialData?.priority || 'medium',
-    potential_need: initialData?.potential_need || '',
-    confirmed_need: initialData?.confirmed_need || '',
-    source: initialData?.source || '',
+    company_name: initialData?.company_name || "",
+    contact_name: initialData?.contact_name || "",
+    email: initialData?.email || "",
+    phone: initialData?.phone || "",
+    website: initialData?.website || "",
+    status: initialData?.status || "lead",
+    priority: initialData?.priority || "medium",
+    potential_need: initialData?.potential_need || "",
+    confirmed_need: initialData?.confirmed_need || "",
+    source: initialData?.source || "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -39,18 +56,18 @@ export function ProspectForm({ open, onOpenChange, onSuccess, initialData }: Pro
     try {
       if (initialData) {
         await prospectsApi.update(initialData.id, formData);
-        toast.success('Prospect mis \u00e0 jour avec succ\u00e8s');
+        toast.success("Prospect mis \u00e0 jour avec succ\u00e8s");
       } else {
         await prospectsApi.create(formData);
-        toast.success('Prospect cr\u00e9\u00e9 avec succ\u00e8s');
+        toast.success("Prospect cr\u00e9\u00e9 avec succ\u00e8s");
       }
       onOpenChange(false);
       onSuccess?.();
     } catch (error) {
       toast.error(
         initialData
-          ? 'Erreur lors de la mise \u00e0 jour du prospect'
-          : 'Erreur lors de la cr\u00e9ation du prospect'
+          ? "Erreur lors de la mise \u00e0 jour du prospect"
+          : "Erreur lors de la cr\u00e9ation du prospect",
       );
       console.error(error);
     } finally {
@@ -67,7 +84,7 @@ export function ProspectForm({ open, onOpenChange, onSuccess, initialData }: Pro
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
-            {initialData ? 'Modifier le prospect' : 'Nouveau prospect'}
+            {initialData ? "Modifier le prospect" : "Nouveau prospect"}
           </DialogTitle>
         </DialogHeader>
 
@@ -80,7 +97,7 @@ export function ProspectForm({ open, onOpenChange, onSuccess, initialData }: Pro
               <Input
                 id="company_name"
                 value={formData.company_name}
-                onChange={(e) => updateField('company_name', e.target.value)}
+                onChange={(e) => updateField("company_name", e.target.value)}
                 required
                 placeholder="Nom de l'entreprise"
               />
@@ -93,7 +110,7 @@ export function ProspectForm({ open, onOpenChange, onSuccess, initialData }: Pro
               <Input
                 id="contact_name"
                 value={formData.contact_name}
-                onChange={(e) => updateField('contact_name', e.target.value)}
+                onChange={(e) => updateField("contact_name", e.target.value)}
                 required
                 placeholder="Nom du contact"
               />
@@ -109,7 +126,7 @@ export function ProspectForm({ open, onOpenChange, onSuccess, initialData }: Pro
                 id="email"
                 type="email"
                 value={formData.email}
-                onChange={(e) => updateField('email', e.target.value)}
+                onChange={(e) => updateField("email", e.target.value)}
                 placeholder="email@exemple.com"
               />
             </div>
@@ -122,7 +139,7 @@ export function ProspectForm({ open, onOpenChange, onSuccess, initialData }: Pro
                 id="phone"
                 type="tel"
                 value={formData.phone}
-                onChange={(e) => updateField('phone', e.target.value)}
+                onChange={(e) => updateField("phone", e.target.value)}
                 placeholder="+33 6 12 34 56 78"
               />
             </div>
@@ -136,7 +153,7 @@ export function ProspectForm({ open, onOpenChange, onSuccess, initialData }: Pro
               id="website"
               type="url"
               value={formData.website}
-              onChange={(e) => updateField('website', e.target.value)}
+              onChange={(e) => updateField("website", e.target.value)}
               placeholder="https://exemple.com"
             />
           </div>
@@ -148,7 +165,7 @@ export function ProspectForm({ open, onOpenChange, onSuccess, initialData }: Pro
               </label>
               <Select
                 value={formData.status}
-                onValueChange={(value) => updateField('status', value)}
+                onValueChange={(value) => updateField("status", value)}
               >
                 <SelectTrigger id="status">
                   <SelectValue />
@@ -171,7 +188,7 @@ export function ProspectForm({ open, onOpenChange, onSuccess, initialData }: Pro
               </label>
               <Select
                 value={formData.priority}
-                onValueChange={(value) => updateField('priority', value)}
+                onValueChange={(value) => updateField("priority", value)}
               >
                 <SelectTrigger id="priority">
                   <SelectValue />
@@ -193,7 +210,7 @@ export function ProspectForm({ open, onOpenChange, onSuccess, initialData }: Pro
             <Input
               id="source"
               value={formData.source}
-              onChange={(e) => updateField('source', e.target.value)}
+              onChange={(e) => updateField("source", e.target.value)}
               placeholder="Ex: LinkedIn, Site web, R\u00e9f\u00e9rence..."
             />
           </div>
@@ -205,7 +222,7 @@ export function ProspectForm({ open, onOpenChange, onSuccess, initialData }: Pro
             <Textarea
               id="potential_need"
               value={formData.potential_need}
-              onChange={(e) => updateField('potential_need', e.target.value)}
+              onChange={(e) => updateField("potential_need", e.target.value)}
               placeholder="D\u00e9crivez le besoin potentiel du prospect..."
               rows={3}
             />
@@ -218,7 +235,7 @@ export function ProspectForm({ open, onOpenChange, onSuccess, initialData }: Pro
             <Textarea
               id="confirmed_need"
               value={formData.confirmed_need}
-              onChange={(e) => updateField('confirmed_need', e.target.value)}
+              onChange={(e) => updateField("confirmed_need", e.target.value)}
               placeholder="D\u00e9crivez le besoin confirm\u00e9..."
               rows={3}
             />
@@ -234,7 +251,11 @@ export function ProspectForm({ open, onOpenChange, onSuccess, initialData }: Pro
               Annuler
             </Button>
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'En cours...' : initialData ? 'Mettre \u00e0 jour' : 'Cr\u00e9er'}
+              {isLoading
+                ? "En cours..."
+                : initialData
+                  ? "Mettre \u00e0 jour"
+                  : "Cr\u00e9er"}
             </Button>
           </DialogFooter>
         </form>

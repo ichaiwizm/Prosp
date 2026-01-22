@@ -1,6 +1,6 @@
-import { Sidebar } from '@/components/layout/sidebar';
-import { cn } from '@/lib/utils';
-import { ReactNode } from 'react';
+import { Sidebar } from "@/components/layout/sidebar";
+import { cn } from "@/lib/utils";
+import { ReactNode } from "react";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -15,8 +15,8 @@ export default function AppLayout({ children }: AppLayoutProps) {
       {/* Main content */}
       <main
         className={cn(
-          'flex-1 overflow-y-auto',
-          'transition-all duration-300 ease-in-out'
+          "flex-1 overflow-y-auto",
+          "transition-all duration-300 ease-in-out",
         )}
       >
         {children}

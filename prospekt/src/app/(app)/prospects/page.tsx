@@ -1,24 +1,42 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card } from '@/components/ui/card';
-import { StatusBadge } from '@/components/features/prospects/status-badge';
-import { PriorityBadge } from '@/components/features/prospects/priority-badge';
-import { ProspectForm } from '@/components/features/prospects/prospect-form';
-import { Pagination } from '@/components/shared/Pagination';
-import { prospectsApi } from '@/lib/api-client';
-import { toast } from 'sonner';
-import { format } from 'date-fns';
-import { fr } from 'date-fns/locale';
-import { Plus, Search, ArrowUpDown, Mail, Phone, ExternalLink } from 'lucide-react';
-import type { Prospect } from '@/types/database.types';
+import { useState, useEffect, useMemo } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Card } from "@/components/ui/card";
+import { StatusBadge } from "@/components/features/prospects/status-badge";
+import { PriorityBadge } from "@/components/features/prospects/priority-badge";
+import { ProspectForm } from "@/components/features/prospects/prospect-form";
+import { Pagination } from "@/components/shared/Pagination";
+import { prospectsApi } from "@/lib/api-client";
+import { toast } from "sonner";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
+import {
+  Plus,
+  Search,
+  ArrowUpDown,
+  Mail,
+  Phone,
+  ExternalLink,
+} from "lucide-react";
+import type { Prospect } from "@/types/database.types";
 
-type SortField = 'company_name' | 'contact_name' | 'status' | 'priority' | 'last_exchange';
-type SortDirection = 'asc' | 'desc';
+type SortField =
+  | "company_name"
+  | "contact_name"
+  | "status"
+  | "priority"
+  | "last_exchange";
+type SortDirection = "asc" | "desc";
 
 export default function ProspectsPage() {
   const router = useRouter();
@@ -27,13 +45,13 @@ export default function ProspectsPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   // Filtres
-  const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [priorityFilter, setPriorityFilter] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [priorityFilter, setPriorityFilter] = useState<string>("all");
 
   // Tri
-  const [sortField, setSortField] = useState<SortField>('company_name');
-  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+  const [sortField, setSortField] = useState<SortField>("company_name");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -49,7 +67,7 @@ export default function ProspectsPage() {
       const data = await prospectsApi.list();
       setProspects(data);
     } catch (error) {
-      toast.error('Erreur lors du chargement des prospects');
+      toast.error("Erreur lors du chargement des prospects");
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -67,17 +85,17 @@ export default function ProspectsPage() {
         (p) =>
           p.company_name?.toLowerCase().includes(query) ||
           p.contact_name?.toLowerCase().includes(query) ||
-          p.email?.toLowerCase().includes(query)
+          p.email?.toLowerCase().includes(query),
       );
     }
 
     // Filtre status
-    if (statusFilter !== 'all') {
+    if (statusFilter !== "all") {
       filtered = filtered.filter((p) => p.status === statusFilter);
     }
 
     // Filtre priority
-    if (priorityFilter !== 'all') {
+    if (priorityFilter !== "all") {
       filtered = filtered.filter((p) => p.priority === priorityFilter);
     }
 
@@ -87,50 +105,59 @@ export default function ProspectsPage() {
       let bValue: string | number | undefined;
 
       switch (sortField) {
-        case 'company_name':
-          aValue = a.company_name?.toLowerCase() || '';
-          bValue = b.company_name?.toLowerCase() || '';
+        case "company_name":
+          aValue = a.company_name?.toLowerCase() || "";
+          bValue = b.company_name?.toLowerCase() || "";
           break;
-        case 'contact_name':
-          aValue = a.contact_name?.toLowerCase() || '';
-          bValue = b.contact_name?.toLowerCase() || '';
+        case "contact_name":
+          aValue = a.contact_name?.toLowerCase() || "";
+          bValue = b.contact_name?.toLowerCase() || "";
           break;
-        case 'status':
-          aValue = a.status || '';
-          bValue = b.status || '';
+        case "status":
+          aValue = a.status || "";
+          bValue = b.status || "";
           break;
-        case 'priority':
+        case "priority":
           const priorityOrder = { urgent: 4, high: 3, medium: 2, low: 1 };
           aValue = priorityOrder[a.priority] || 0;
           bValue = priorityOrder[b.priority] || 0;
           break;
-        case 'last_exchange':
-          aValue = a.last_exchange || '';
-          bValue = b.last_exchange || '';
+        case "last_exchange":
+          aValue = a.last_exchange || "";
+          bValue = b.last_exchange || "";
           break;
       }
 
-      if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
-      if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+      if (aValue < bValue) return sortDirection === "asc" ? -1 : 1;
+      if (aValue > bValue) return sortDirection === "asc" ? 1 : -1;
       return 0;
     });
 
     return filtered;
-  }, [prospects, searchQuery, statusFilter, priorityFilter, sortField, sortDirection]);
+  }, [
+    prospects,
+    searchQuery,
+    statusFilter,
+    priorityFilter,
+    sortField,
+    sortDirection,
+  ]);
 
   // Pagination
-  const totalPages = Math.ceil(filteredAndSortedProspects.length / itemsPerPage);
+  const totalPages = Math.ceil(
+    filteredAndSortedProspects.length / itemsPerPage,
+  );
   const paginatedProspects = filteredAndSortedProspects.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+    currentPage * itemsPerPage,
   );
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     } else {
       setSortField(field);
-      setSortDirection('asc');
+      setSortDirection("asc");
     }
   };
 
@@ -207,9 +234,9 @@ export default function ProspectsPage() {
           </div>
         ) : paginatedProspects.length === 0 ? (
           <div className="p-8 text-center text-muted-foreground">
-            {searchQuery || statusFilter !== 'all' || priorityFilter !== 'all'
-              ? 'Aucun prospect ne correspond à vos filtres'
-              : 'Aucun prospect pour le moment'}
+            {searchQuery || statusFilter !== "all" || priorityFilter !== "all"
+              ? "Aucun prospect ne correspond à vos filtres"
+              : "Aucun prospect pour le moment"}
           </div>
         ) : (
           <>
@@ -219,7 +246,7 @@ export default function ProspectsPage() {
                   <tr className="border-b bg-muted/50">
                     <th className="text-left p-4 font-medium">
                       <button
-                        onClick={() => handleSort('company_name')}
+                        onClick={() => handleSort("company_name")}
                         className="flex items-center gap-2 hover:text-primary transition-colors"
                       >
                         Entreprise
@@ -228,7 +255,7 @@ export default function ProspectsPage() {
                     </th>
                     <th className="text-left p-4 font-medium">
                       <button
-                        onClick={() => handleSort('contact_name')}
+                        onClick={() => handleSort("contact_name")}
                         className="flex items-center gap-2 hover:text-primary transition-colors"
                       >
                         Contact
@@ -237,7 +264,7 @@ export default function ProspectsPage() {
                     </th>
                     <th className="text-left p-4 font-medium">
                       <button
-                        onClick={() => handleSort('status')}
+                        onClick={() => handleSort("status")}
                         className="flex items-center gap-2 hover:text-primary transition-colors"
                       >
                         Status
@@ -246,7 +273,7 @@ export default function ProspectsPage() {
                     </th>
                     <th className="text-left p-4 font-medium">
                       <button
-                        onClick={() => handleSort('priority')}
+                        onClick={() => handleSort("priority")}
                         className="flex items-center gap-2 hover:text-primary transition-colors"
                       >
                         Priorité
@@ -255,7 +282,7 @@ export default function ProspectsPage() {
                     </th>
                     <th className="text-left p-4 font-medium">
                       <button
-                        onClick={() => handleSort('last_exchange')}
+                        onClick={() => handleSort("last_exchange")}
                         className="flex items-center gap-2 hover:text-primary transition-colors"
                       >
                         Dernier échange
@@ -273,7 +300,9 @@ export default function ProspectsPage() {
                       className="border-b hover:bg-muted/50 cursor-pointer transition-colors"
                     >
                       <td className="p-4">
-                        <div className="font-medium">{prospect.company_name}</div>
+                        <div className="font-medium">
+                          {prospect.company_name}
+                        </div>
                         {prospect.website && (
                           <a
                             href={prospect.website}
@@ -320,8 +349,12 @@ export default function ProspectsPage() {
                       </td>
                       <td className="p-4 text-sm text-muted-foreground">
                         {prospect.last_exchange
-                          ? format(new Date(prospect.last_exchange), 'dd MMM yyyy', { locale: fr })
-                          : 'Jamais'}
+                          ? format(
+                              new Date(prospect.last_exchange),
+                              "dd MMM yyyy",
+                              { locale: fr },
+                            )
+                          : "Jamais"}
                       </td>
                       <td className="p-4">
                         <Button

@@ -1,5 +1,5 @@
-import { createServerClient } from '@supabase/ssr';
-import { NextResponse, type NextRequest } from 'next/server';
+import { createServerClient } from "@supabase/ssr";
+import { NextResponse, type NextRequest } from "next/server";
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -15,16 +15,18 @@ export async function updateSession(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value));
+          cookiesToSet.forEach(({ name, value, options }) =>
+            request.cookies.set(name, value),
+          );
           supabaseResponse = NextResponse.next({
             request,
           });
           cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
+            supabaseResponse.cookies.set(name, value, options),
           );
         },
       },
-    }
+    },
   );
 
   // Refresh session if expired
@@ -35,39 +37,47 @@ export async function updateSession(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   // Public routes (accessible without authentication)
-  const publicRoutes = ['/login', '/signup', '/reset-password'];
-  const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route));
+  const publicRoutes = ["/login", "/signup", "/reset-password"];
+  const isPublicRoute = publicRoutes.some((route) =>
+    pathname.startsWith(route),
+  );
 
   // Auth routes (login, signup, etc.)
-  const authRoutes = ['/login', '/signup', '/auth/login', '/auth/signup', '/auth/reset-password'];
-  const isAuthRoute = authRoutes.some(route => pathname.startsWith(route));
+  const authRoutes = [
+    "/login",
+    "/signup",
+    "/auth/login",
+    "/auth/signup",
+    "/auth/reset-password",
+  ];
+  const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
 
   // If user is not authenticated and trying to access a protected route
-  if (!user && !isPublicRoute && pathname !== '/') {
+  if (!user && !isPublicRoute && pathname !== "/") {
     const url = request.nextUrl.clone();
-    url.pathname = '/login';
-    url.searchParams.set('redirect', pathname);
+    url.pathname = "/login";
+    url.searchParams.set("redirect", pathname);
     return NextResponse.redirect(url);
   }
 
   // If user is authenticated and trying to access auth pages, redirect to dashboard
   if (user && isAuthRoute) {
     const url = request.nextUrl.clone();
-    url.pathname = '/dashboard';
+    url.pathname = "/dashboard";
     return NextResponse.redirect(url);
   }
 
   // If user is authenticated and on root, redirect to dashboard
-  if (user && pathname === '/') {
+  if (user && pathname === "/") {
     const url = request.nextUrl.clone();
-    url.pathname = '/dashboard';
+    url.pathname = "/dashboard";
     return NextResponse.redirect(url);
   }
 
   // If user is not authenticated and on root, redirect to login
-  if (!user && pathname === '/') {
+  if (!user && pathname === "/") {
     const url = request.nextUrl.clone();
-    url.pathname = '/login';
+    url.pathname = "/login";
     return NextResponse.redirect(url);
   }
 

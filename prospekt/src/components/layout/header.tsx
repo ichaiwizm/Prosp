@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { cn } from '@/lib/utils';
-import { ChevronRight } from 'lucide-react';
-import Link from 'next/link';
-import { ReactNode } from 'react';
+import { cn } from "@/lib/utils";
+import { ChevronRight } from "lucide-react";
+import Link from "next/link";
+import { ReactNode } from "react";
 
 interface BreadcrumbItem {
   label: string;
@@ -28,8 +28,8 @@ export function Header({
   return (
     <header
       className={cn(
-        'sticky top-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60',
-        className
+        "sticky top-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
+        className,
       )}
     >
       <div className="flex items-center justify-between h-16 px-6">
@@ -74,9 +74,7 @@ export function Header({
 
         {/* Actions */}
         {actions && (
-          <div className="flex items-center gap-2 ml-4">
-            {actions}
-          </div>
+          <div className="flex items-center gap-2 ml-4">{actions}</div>
         )}
       </div>
     </header>

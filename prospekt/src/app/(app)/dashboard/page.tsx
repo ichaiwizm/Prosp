@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { Header } from '@/components/layout/header';
-import { PageContainer } from '@/components/layout/page-container';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Plus, Users } from 'lucide-react';
-import { useUser } from '@/hooks/use-user';
-import { DashboardCommercial } from '@/components/features/dashboard/dashboard-commercial';
-import { DashboardTech } from '@/components/features/dashboard/dashboard-tech';
-import Link from 'next/link';
+import { Header } from "@/components/layout/header";
+import { PageContainer } from "@/components/layout/page-container";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Plus, Users } from "lucide-react";
+import { useUser } from "@/hooks/use-user";
+import { DashboardCommercial } from "@/components/features/dashboard/dashboard-commercial";
+import { DashboardTech } from "@/components/features/dashboard/dashboard-tech";
+import Link from "next/link";
 
 export default function DashboardPage() {
   const { profile, loading } = useUser();
@@ -25,7 +25,7 @@ export default function DashboardPage() {
         <PageContainer>
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {[1, 2, 3].map(i => (
+              {[1, 2, 3].map((i) => (
                 <Card key={i} className="animate-pulse">
                   <CardHeader>
                     <div className="h-4 bg-gray-200 rounded w-1/2"></div>
@@ -67,9 +67,10 @@ export default function DashboardPage() {
   }
 
   // Determine dashboard description based on role
-  const dashboardDescription = profile.role === 'COMMERCIAL'
-    ? 'Vue commerciale - Gérez vos prospects et conversions'
-    : 'Vue technique - Gérez vos projets et développements';
+  const dashboardDescription =
+    profile.role === "COMMERCIAL"
+      ? "Vue commerciale - Gérez vos prospects et conversions"
+      : "Vue technique - Gérez vos projets et développements";
 
   return (
     <>
@@ -109,8 +110,8 @@ export default function DashboardPage() {
           </Card>
 
           {/* Role-based Dashboard */}
-          {profile.role === 'COMMERCIAL' && <DashboardCommercial />}
-          {profile.role === 'TECH' && <DashboardTech />}
+          {profile.role === "COMMERCIAL" && <DashboardCommercial />}
+          {profile.role === "TECH" && <DashboardTech />}
         </div>
       </PageContainer>
     </>

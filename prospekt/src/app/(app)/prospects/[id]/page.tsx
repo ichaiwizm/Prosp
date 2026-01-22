@@ -1,23 +1,44 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { StatusBadge } from '@/components/features/prospects/status-badge';
-import { PriorityBadge } from '@/components/features/prospects/priority-badge';
-import { ProspectForm } from '@/components/features/prospects/prospect-form';
-import { ExchangeList } from '@/components/features/exchanges/exchange-list';
-import { NotesList } from '@/components/features/notes/notes-list';
-import { AssistantPanel } from '@/components/features/assistant/assistant-panel';
-import { prospectsApi } from '@/lib/api-client';
-import { toast } from 'sonner';
-import { ArrowLeft, Mail, Phone, ExternalLink, Edit2, Bot, Building2, User } from 'lucide-react';
-import type { Prospect } from '@/types/database.types';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { StatusBadge } from "@/components/features/prospects/status-badge";
+import { PriorityBadge } from "@/components/features/prospects/priority-badge";
+import { ProspectForm } from "@/components/features/prospects/prospect-form";
+import { ExchangeList } from "@/components/features/exchanges/exchange-list";
+import { NotesList } from "@/components/features/notes/notes-list";
+import { AssistantPanel } from "@/components/features/assistant/assistant-panel";
+import { prospectsApi } from "@/lib/api-client";
+import { toast } from "sonner";
+import {
+  ArrowLeft,
+  Mail,
+  Phone,
+  ExternalLink,
+  Edit2,
+  Bot,
+  Building2,
+  User,
+} from "lucide-react";
+import type { Prospect } from "@/types/database.types";
 
 interface ProspectDetailPageProps {
   params: {
@@ -25,7 +46,9 @@ interface ProspectDetailPageProps {
   };
 }
 
-export default function ProspectDetailPage({ params }: ProspectDetailPageProps) {
+export default function ProspectDetailPage({
+  params,
+}: ProspectDetailPageProps) {
   const router = useRouter();
   const [prospect, setProspect] = useState<Prospect | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -35,8 +58,10 @@ export default function ProspectDetailPage({ params }: ProspectDetailPageProps) 
   const [isNeedDialogOpen, setIsNeedDialogOpen] = useState(false);
   const [isAssistantDialogOpen, setIsAssistantDialogOpen] = useState(false);
 
-  const [editingField, setEditingField] = useState<'potential_need' | 'confirmed_need'>('potential_need');
-  const [needContent, setNeedContent] = useState('');
+  const [editingField, setEditingField] = useState<
+    "potential_need" | "confirmed_need"
+  >("potential_need");
+  const [needContent, setNeedContent] = useState("");
 
   useEffect(() => {
     loadProspect();
@@ -48,37 +73,37 @@ export default function ProspectDetailPage({ params }: ProspectDetailPageProps) 
       const data = await prospectsApi.get(params.id);
       setProspect(data);
     } catch (error) {
-      toast.error('Erreur lors du chargement du prospect');
+      toast.error("Erreur lors du chargement du prospect");
       console.error(error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleUpdateStatus = async (newStatus: Prospect['status']) => {
+  const handleUpdateStatus = async (newStatus: Prospect["status"]) => {
     if (!prospect) return;
 
     try {
       await prospectsApi.update(prospect.id, { status: newStatus });
-      toast.success('Status mis à jour');
+      toast.success("Status mis à jour");
       setIsStatusDialogOpen(false);
       loadProspect();
     } catch (error) {
-      toast.error('Erreur lors de la mise à jour');
+      toast.error("Erreur lors de la mise à jour");
       console.error(error);
     }
   };
 
-  const handleUpdatePriority = async (newPriority: Prospect['priority']) => {
+  const handleUpdatePriority = async (newPriority: Prospect["priority"]) => {
     if (!prospect) return;
 
     try {
       await prospectsApi.update(prospect.id, { priority: newPriority });
-      toast.success('Priorité mise à jour');
+      toast.success("Priorité mise à jour");
       setIsPriorityDialogOpen(false);
       loadProspect();
     } catch (error) {
-      toast.error('Erreur lors de la mise à jour');
+      toast.error("Erreur lors de la mise à jour");
       console.error(error);
     }
   };
@@ -87,23 +112,24 @@ export default function ProspectDetailPage({ params }: ProspectDetailPageProps) 
     if (!prospect) return;
 
     try {
-      const updateData = editingField === 'potential_need'
-        ? { potential_need: needContent }
-        : { confirmed_need: needContent };
+      const updateData =
+        editingField === "potential_need"
+          ? { potential_need: needContent }
+          : { confirmed_need: needContent };
 
       await prospectsApi.update(prospect.id, updateData);
-      toast.success('Besoin mis à jour');
+      toast.success("Besoin mis à jour");
       setIsNeedDialogOpen(false);
       loadProspect();
     } catch (error) {
-      toast.error('Erreur lors de la mise à jour');
+      toast.error("Erreur lors de la mise à jour");
       console.error(error);
     }
   };
 
-  const openNeedDialog = (field: 'potential_need' | 'confirmed_need') => {
+  const openNeedDialog = (field: "potential_need" | "confirmed_need") => {
     setEditingField(field);
-    setNeedContent(prospect?.[field] || '');
+    setNeedContent(prospect?.[field] || "");
     setIsNeedDialogOpen(true);
   };
 
@@ -120,7 +146,7 @@ export default function ProspectDetailPage({ params }: ProspectDetailPageProps) 
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-2">Prospect introuvable</h2>
-          <Button onClick={() => router.push('/prospects')}>
+          <Button onClick={() => router.push("/prospects")}>
             Retour à la liste
           </Button>
         </div>
@@ -136,7 +162,7 @@ export default function ProspectDetailPage({ params }: ProspectDetailPageProps) 
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => router.push('/prospects')}
+            onClick={() => router.push("/prospects")}
           >
             <ArrowLeft className="size-5" />
           </Button>
@@ -146,7 +172,10 @@ export default function ProspectDetailPage({ params }: ProspectDetailPageProps) 
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={() => setIsAssistantDialogOpen(true)}>
+          <Button
+            variant="outline"
+            onClick={() => setIsAssistantDialogOpen(true)}
+          >
             <Bot className="size-4" />
             Assistant IA
           </Button>
@@ -219,7 +248,9 @@ export default function ProspectDetailPage({ params }: ProspectDetailPageProps) 
                 </button>
               </div>
               <div>
-                <div className="text-xs text-muted-foreground mb-1">Priorité</div>
+                <div className="text-xs text-muted-foreground mb-1">
+                  Priorité
+                </div>
                 <button onClick={() => setIsPriorityDialogOpen(true)}>
                   <PriorityBadge priority={prospect.priority} />
                 </button>
@@ -237,13 +268,13 @@ export default function ProspectDetailPage({ params }: ProspectDetailPageProps) 
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => openNeedDialog('potential_need')}
+              onClick={() => openNeedDialog("potential_need")}
             >
               <Edit2 className="size-4" />
             </Button>
           </div>
           <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-            {prospect.potential_need || 'Aucun besoin potentiel défini'}
+            {prospect.potential_need || "Aucun besoin potentiel défini"}
           </p>
         </Card>
 
@@ -253,13 +284,13 @@ export default function ProspectDetailPage({ params }: ProspectDetailPageProps) 
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => openNeedDialog('confirmed_need')}
+              onClick={() => openNeedDialog("confirmed_need")}
             >
               <Edit2 className="size-4" />
             </Button>
           </div>
           <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-            {prospect.confirmed_need || 'Aucun besoin confirmé'}
+            {prospect.confirmed_need || "Aucun besoin confirmé"}
           </p>
         </Card>
       </div>
@@ -295,7 +326,9 @@ export default function ProspectDetailPage({ params }: ProspectDetailPageProps) 
           </DialogHeader>
           <Select
             value={prospect.status}
-            onValueChange={(value) => handleUpdateStatus(value as Prospect['status'])}
+            onValueChange={(value) =>
+              handleUpdateStatus(value as Prospect["status"])
+            }
           >
             <SelectTrigger>
               <SelectValue />
@@ -313,14 +346,19 @@ export default function ProspectDetailPage({ params }: ProspectDetailPageProps) 
         </DialogContent>
       </Dialog>
 
-      <Dialog open={isPriorityDialogOpen} onOpenChange={setIsPriorityDialogOpen}>
+      <Dialog
+        open={isPriorityDialogOpen}
+        onOpenChange={setIsPriorityDialogOpen}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Modifier la priorité</DialogTitle>
           </DialogHeader>
           <Select
             value={prospect.priority}
-            onValueChange={(value) => handleUpdatePriority(value as Prospect['priority'])}
+            onValueChange={(value) =>
+              handleUpdatePriority(value as Prospect["priority"])
+            }
           >
             <SelectTrigger>
               <SelectValue />
@@ -339,7 +377,9 @@ export default function ProspectDetailPage({ params }: ProspectDetailPageProps) 
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {editingField === 'potential_need' ? 'Besoin potentiel' : 'Besoin confirmé'}
+              {editingField === "potential_need"
+                ? "Besoin potentiel"
+                : "Besoin confirmé"}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
@@ -351,7 +391,10 @@ export default function ProspectDetailPage({ params }: ProspectDetailPageProps) 
             />
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsNeedDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setIsNeedDialogOpen(false)}
+            >
               Annuler
             </Button>
             <Button onClick={handleUpdateNeed}>Enregistrer</Button>
@@ -366,15 +409,21 @@ export default function ProspectDetailPage({ params }: ProspectDetailPageProps) 
             prospectId: prospect.id,
             prospect: {
               id: prospect.id,
-              user_id: '', // Not needed for assistant context
-              name: prospect.contact_name,
-              email: prospect.email || '',
-              phone: prospect.phone || '',
-              company: prospect.company_name,
-              status: prospect.status as any,
-              created_at: prospect.created_at || '',
-              updated_at: prospect.updated_at || ''
-            }
+              company_name: prospect.company_name,
+              contact_name: prospect.contact_name,
+              email: prospect.email || "",
+              phone: prospect.phone || "",
+              website: prospect.website,
+              status: prospect.status,
+              priority: prospect.priority,
+              potential_need: prospect.potential_need,
+              confirmed_need: prospect.confirmed_need,
+              last_exchange: prospect.last_exchange,
+              source: prospect.source,
+              tags: prospect.tags,
+              created_at: prospect.created_at || "",
+              updated_at: prospect.updated_at || "",
+            },
           }}
           onClose={() => setIsAssistantDialogOpen(false)}
         />

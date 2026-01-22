@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useCallback } from 'react';
-import { Input } from '@/components/ui/input';
-import { Search, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { useState, useEffect, useCallback } from "react";
+import { Input } from "@/components/ui/input";
+import { Search, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface DocSearchProps {
   onSearch: (query: string) => void;
@@ -15,12 +15,12 @@ interface DocSearchProps {
 
 export function DocSearch({
   onSearch,
-  placeholder = 'Rechercher dans la documentation...',
+  placeholder = "Rechercher dans la documentation...",
   className,
-  debounceMs = 300
+  debounceMs = 300,
 }: DocSearchProps) {
-  const [query, setQuery] = useState('');
-  const [debouncedQuery, setDebouncedQuery] = useState('');
+  const [query, setQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
 
   // Debounce search query
   useEffect(() => {
@@ -39,12 +39,12 @@ export function DocSearch({
   }, [debouncedQuery, onSearch]);
 
   const handleClear = useCallback(() => {
-    setQuery('');
-    setDebouncedQuery('');
+    setQuery("");
+    setDebouncedQuery("");
   }, []);
 
   return (
-    <div className={cn('relative w-full', className)}>
+    <div className={cn("relative w-full", className)}>
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input

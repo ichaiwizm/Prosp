@@ -1,6 +1,8 @@
 # Prospekt - CRM Intelligent
 
-Un CRM moderne et intelligent construit avec Next.js 15, Supabase, et Shadcn/ui.
+Un CRM moderne et intelligent construit avec Next.js 16, Supabase, et Shadcn/ui.
+
+> **Note:** Ce projet a été récemment nettoyé et optimisé. Consultez [RAPPORT_NETTOYAGE.md](./RAPPORT_NETTOYAGE.md) pour les détails.
 
 ## Stack Technique
 

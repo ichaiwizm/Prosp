@@ -1,23 +1,23 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { AssistantPanel } from './assistant-panel';
-import { AssistantContext } from '@/types';
-import { Sparkles } from 'lucide-react';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { AssistantPanel } from "./assistant-panel";
+import { AssistantContext } from "@/types";
+import { Sparkles } from "lucide-react";
 
 interface AssistantButtonProps {
   context: AssistantContext;
-  variant?: 'default' | 'outline' | 'ghost';
-  size?: 'default' | 'sm' | 'lg' | 'icon';
+  variant?: "default" | "outline" | "ghost";
+  size?: "default" | "sm" | "lg" | "icon";
   className?: string;
 }
 
 export function AssistantButton({
   context,
-  variant = 'default',
-  size = 'default',
-  className
+  variant = "default",
+  size = "default",
+  className,
 }: AssistantButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -34,10 +34,7 @@ export function AssistantButton({
       </Button>
 
       {isOpen && (
-        <AssistantPanel
-          context={context}
-          onClose={() => setIsOpen(false)}
-        />
+        <AssistantPanel context={context} onClose={() => setIsOpen(false)} />
       )}
     </>
   );

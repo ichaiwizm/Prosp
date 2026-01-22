@@ -7,8 +7,15 @@ export interface Prospect {
   email?: string;
   phone?: string;
   website?: string;
-  status: 'lead' | 'contacted' | 'qualified' | 'proposal' | 'negotiation' | 'won' | 'lost';
-  priority: 'low' | 'medium' | 'high' | 'urgent';
+  status:
+    | "lead"
+    | "contacted"
+    | "qualified"
+    | "proposal"
+    | "negotiation"
+    | "won"
+    | "lost";
+  priority: "low" | "medium" | "high" | "urgent";
   potential_need?: string;
   confirmed_need?: string;
   last_exchange?: string;
@@ -21,11 +28,11 @@ export interface Prospect {
 export interface Exchange {
   id: string;
   prospect_id: string;
-  type: 'email' | 'call' | 'meeting' | 'linkedin' | 'other';
+  type: "email" | "call" | "meeting" | "linkedin" | "other";
   subject?: string;
   content?: string;
-  direction?: 'inbound' | 'outbound';
-  status?: 'draft' | 'sent' | 'received' | 'completed';
+  direction?: "inbound" | "outbound";
+  status?: "draft" | "sent" | "received" | "completed";
   scheduled_at?: string;
   created_at?: string;
   updated_at?: string;
@@ -36,7 +43,7 @@ export interface Note {
   id: string;
   prospect_id: string;
   content: string;
-  type?: 'general' | 'call' | 'meeting' | 'reminder' | 'followup';
+  type?: "general" | "call" | "meeting" | "reminder" | "followup";
   is_pinned?: boolean;
   created_at?: string;
   updated_at?: string;
@@ -64,8 +71,8 @@ export interface CreateProspectRequest {
   email?: string;
   phone?: string;
   website?: string;
-  status?: Prospect['status'];
-  priority?: Prospect['priority'];
+  status?: Prospect["status"];
+  priority?: Prospect["priority"];
   potential_need?: string;
   confirmed_need?: string;
   source?: string;
@@ -78,8 +85,8 @@ export interface UpdateProspectRequest {
   email?: string;
   phone?: string;
   website?: string;
-  status?: Prospect['status'];
-  priority?: Prospect['priority'];
+  status?: Prospect["status"];
+  priority?: Prospect["priority"];
   potential_need?: string;
   confirmed_need?: string;
   source?: string;
@@ -88,33 +95,33 @@ export interface UpdateProspectRequest {
 
 export interface CreateExchangeRequest {
   prospect_id: string;
-  type: Exchange['type'];
+  type: Exchange["type"];
   subject?: string;
   content?: string;
-  direction?: Exchange['direction'];
-  status?: Exchange['status'];
+  direction?: Exchange["direction"];
+  status?: Exchange["status"];
   scheduled_at?: string;
 }
 
 export interface UpdateExchangeRequest {
-  type?: Exchange['type'];
+  type?: Exchange["type"];
   subject?: string;
   content?: string;
-  direction?: Exchange['direction'];
-  status?: Exchange['status'];
+  direction?: Exchange["direction"];
+  status?: Exchange["status"];
   scheduled_at?: string;
 }
 
 export interface CreateNoteRequest {
   prospect_id: string;
   content: string;
-  type?: Note['type'];
+  type?: Note["type"];
   is_pinned?: boolean;
 }
 
 export interface UpdateNoteRequest {
   content?: string;
-  type?: Note['type'];
+  type?: Note["type"];
   is_pinned?: boolean;
 }
 

@@ -1,19 +1,38 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { exchangesApi } from '@/lib/api-client';
-import { toast } from 'sonner';
-import { format } from 'date-fns';
-import { fr } from 'date-fns/locale';
-import { Phone, Mail, Calendar, Linkedin, MessageSquare, Plus } from 'lucide-react';
-import type { Exchange, CreateExchangeRequest } from '@/types/database.types';
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { exchangesApi } from "@/lib/api-client";
+import { toast } from "sonner";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
+import {
+  Phone,
+  Mail,
+  Calendar,
+  Linkedin,
+  MessageSquare,
+  Plus,
+} from "lucide-react";
+import type { Exchange, CreateExchangeRequest } from "@/types/database.types";
 
 interface ExchangeListProps {
   prospectId: string;
@@ -28,11 +47,11 @@ const exchangeIcons = {
 };
 
 const exchangeColors = {
-  call: 'bg-blue-100 text-blue-700 border-blue-200',
-  email: 'bg-purple-100 text-purple-700 border-purple-200',
-  meeting: 'bg-green-100 text-green-700 border-green-200',
-  linkedin: 'bg-indigo-100 text-indigo-700 border-indigo-200',
-  other: 'bg-gray-100 text-gray-700 border-gray-200',
+  call: "bg-blue-100 text-blue-700 border-blue-200",
+  email: "bg-purple-100 text-purple-700 border-purple-200",
+  meeting: "bg-green-100 text-green-700 border-green-200",
+  linkedin: "bg-indigo-100 text-indigo-700 border-indigo-200",
+  other: "bg-gray-100 text-gray-700 border-gray-200",
 };
 
 export function ExchangeList({ prospectId }: ExchangeListProps) {
@@ -43,11 +62,11 @@ export function ExchangeList({ prospectId }: ExchangeListProps) {
 
   const [formData, setFormData] = useState<CreateExchangeRequest>({
     prospect_id: prospectId,
-    type: 'call',
-    subject: '',
-    content: '',
-    direction: 'outbound',
-    status: 'completed',
+    type: "call",
+    subject: "",
+    content: "",
+    direction: "outbound",
+    status: "completed",
   });
 
   useEffect(() => {
@@ -60,7 +79,7 @@ export function ExchangeList({ prospectId }: ExchangeListProps) {
       const data = await exchangesApi.listByProspect(prospectId);
       setExchanges(data);
     } catch (error) {
-      toast.error('Erreur lors du chargement des \u00e9changes');
+      toast.error("Erreur lors du chargement des \u00e9changes");
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -73,19 +92,19 @@ export function ExchangeList({ prospectId }: ExchangeListProps) {
 
     try {
       await exchangesApi.create(formData);
-      toast.success('\u00c9change ajout\u00e9 avec succ\u00e8s');
+      toast.success("\u00c9change ajout\u00e9 avec succ\u00e8s");
       setIsDialogOpen(false);
       setFormData({
         prospect_id: prospectId,
-        type: 'call',
-        subject: '',
-        content: '',
-        direction: 'outbound',
-        status: 'completed',
+        type: "call",
+        subject: "",
+        content: "",
+        direction: "outbound",
+        status: "completed",
       });
       loadExchanges();
     } catch (error) {
-      toast.error('Erreur lors de l\'ajout de l\'\u00e9change');
+      toast.error("Erreur lors de l'ajout de l'\u00e9change");
       console.error(error);
     } finally {
       setIsSubmitting(false);
@@ -131,21 +150,35 @@ export function ExchangeList({ prospectId }: ExchangeListProps) {
                   <div className="flex-1 space-y-2">
                     <div className="flex items-start justify-between">
                       <div>
-                        <h4 className="font-medium">{exchange.subject || 'Sans titre'}</h4>
+                        <h4 className="font-medium">
+                          {exchange.subject || "Sans titre"}
+                        </h4>
                         <p className="text-sm text-muted-foreground">
                           {exchange.created_at &&
-                            format(new Date(exchange.created_at), 'PPP \u00e0 HH:mm', { locale: fr })}
+                            format(
+                              new Date(exchange.created_at),
+                              "PPP \u00e0 HH:mm",
+                              { locale: fr },
+                            )}
                         </p>
                       </div>
                       <div className="flex items-center gap-2">
                         <Badge variant="outline" className="capitalize">
-                          {exchange.direction === 'inbound' ? 'Entrant' : 'Sortant'}
+                          {exchange.direction === "inbound"
+                            ? "Entrant"
+                            : "Sortant"}
                         </Badge>
                         <Badge
-                          variant={exchange.status === 'completed' ? 'default' : 'secondary'}
+                          variant={
+                            exchange.status === "completed"
+                              ? "default"
+                              : "secondary"
+                          }
                           className="capitalize"
                         >
-                          {exchange.status === 'completed' ? 'Termin\u00e9' : exchange.status}
+                          {exchange.status === "completed"
+                            ? "Termin\u00e9"
+                            : exchange.status}
                         </Badge>
                       </div>
                     </div>
@@ -178,7 +211,10 @@ export function ExchangeList({ prospectId }: ExchangeListProps) {
                 <Select
                   value={formData.type}
                   onValueChange={(value) =>
-                    setFormData((prev) => ({ ...prev, type: value as Exchange['type'] }))
+                    setFormData((prev) => ({
+                      ...prev,
+                      type: value as Exchange["type"],
+                    }))
                   }
                 >
                   <SelectTrigger id="type">
@@ -201,7 +237,10 @@ export function ExchangeList({ prospectId }: ExchangeListProps) {
                 <Select
                   value={formData.direction}
                   onValueChange={(value) =>
-                    setFormData((prev) => ({ ...prev, direction: value as Exchange['direction'] }))
+                    setFormData((prev) => ({
+                      ...prev,
+                      direction: value as Exchange["direction"],
+                    }))
                   }
                 >
                   <SelectTrigger id="direction">
@@ -222,7 +261,9 @@ export function ExchangeList({ prospectId }: ExchangeListProps) {
               <Input
                 id="subject"
                 value={formData.subject}
-                onChange={(e) => setFormData((prev) => ({ ...prev, subject: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, subject: e.target.value }))
+                }
                 placeholder="Ex: Premier contact, suivi proposition..."
               />
             </div>
@@ -234,7 +275,9 @@ export function ExchangeList({ prospectId }: ExchangeListProps) {
               <Textarea
                 id="content"
                 value={formData.content}
-                onChange={(e) => setFormData((prev) => ({ ...prev, content: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, content: e.target.value }))
+                }
                 placeholder="D\u00e9taillez l'\u00e9change..."
                 rows={4}
               />
@@ -250,7 +293,7 @@ export function ExchangeList({ prospectId }: ExchangeListProps) {
                 Annuler
               </Button>
               <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? 'Ajout...' : 'Ajouter'}
+                {isSubmitting ? "Ajout..." : "Ajouter"}
               </Button>
             </DialogFooter>
           </form>

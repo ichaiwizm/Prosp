@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getSupabaseClient } from '@/lib/supabase';
+import { NextRequest, NextResponse } from "next/server";
+import { getSupabaseClient } from "@/lib/supabase";
 
 interface RouteContext {
   params: Promise<{
@@ -8,23 +8,20 @@ interface RouteContext {
 }
 
 // GET - Liste toutes les notes ou détail d'une note
-export async function GET(
-  request: NextRequest,
-  context: RouteContext
-) {
+export async function GET(request: NextRequest, context: RouteContext) {
   try {
     const supabase = getSupabaseClient();
     const { path } = await context.params;
     const { searchParams } = new URL(request.url);
-    const prospectId = searchParams.get('prospect_id');
+    const prospectId = searchParams.get("prospect_id");
 
     // GET /api/notes?prospect_id=xxx - Liste les notes d'un prospect
     if ((!path || path.length === 0) && prospectId) {
       const { data, error } = await supabase
-        .from('notes')
-        .select('*')
-        .eq('prospect_id', prospectId)
-        .order('created_at', { ascending: false });
+        .from("notes")
+        .select("*")
+        .eq("prospect_id", prospectId)
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
       return NextResponse.json(data);
@@ -33,9 +30,9 @@ export async function GET(
     // GET /api/notes - Liste toutes les notes
     if (!path || path.length === 0) {
       const { data, error } = await supabase
-        .from('notes')
-        .select('*, prospects(*)')
-        .order('created_at', { ascending: false });
+        .from("notes")
+        .select("*, prospects(*)")
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
       return NextResponse.json(data);
@@ -45,39 +42,33 @@ export async function GET(
     if (path.length === 1) {
       const noteId = path[0];
       const { data, error } = await supabase
-        .from('notes')
-        .select('*, prospects(*)')
-        .eq('id', noteId)
+        .from("notes")
+        .select("*, prospects(*)")
+        .eq("id", noteId)
         .single();
 
       if (error) throw error;
       if (!data) {
-        return NextResponse.json(
-          { error: 'Note not found' },
-          { status: 404 }
-        );
+        return NextResponse.json({ error: "Note not found" }, { status: 404 });
       }
       return NextResponse.json(data);
     }
 
-    return NextResponse.json(
-      { error: 'Route not found' },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Route not found" }, { status: 404 });
   } catch (error) {
-    console.error('GET /api/notes error:', error);
+    console.error("GET /api/notes error:", error);
     return NextResponse.json(
-      { error: 'Internal server error', details: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
+      {
+        error: "Internal server error",
+        details: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 500 },
     );
   }
 }
 
 // POST - Créer une nouvelle note
-export async function POST(
-  request: NextRequest,
-  context: RouteContext
-) {
+export async function POST(request: NextRequest, context: RouteContext) {
   try {
     const supabase = getSupabaseClient();
     const { path } = await context.params;
@@ -86,7 +77,7 @@ export async function POST(
     if (!path || path.length === 0) {
       const body = await request.json();
       const { data, error } = await supabase
-        .from('notes')
+        .from("notes")
         .insert(body)
         .select()
         .single();
@@ -95,24 +86,21 @@ export async function POST(
       return NextResponse.json(data, { status: 201 });
     }
 
-    return NextResponse.json(
-      { error: 'Route not found' },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Route not found" }, { status: 404 });
   } catch (error) {
-    console.error('POST /api/notes error:', error);
+    console.error("POST /api/notes error:", error);
     return NextResponse.json(
-      { error: 'Internal server error', details: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
+      {
+        error: "Internal server error",
+        details: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 500 },
     );
   }
 }
 
 // PUT - Mettre à jour une note
-export async function PUT(
-  request: NextRequest,
-  context: RouteContext
-) {
+export async function PUT(request: NextRequest, context: RouteContext) {
   try {
     const supabase = getSupabaseClient();
     const { path } = await context.params;
@@ -123,48 +111,39 @@ export async function PUT(
       const body = await request.json();
 
       const { data, error } = await supabase
-        .from('notes')
+        .from("notes")
         .update(body)
-        .eq('id', noteId)
+        .eq("id", noteId)
         .select()
         .single();
 
       if (error) throw error;
       if (!data) {
-        return NextResponse.json(
-          { error: 'Note not found' },
-          { status: 404 }
-        );
+        return NextResponse.json({ error: "Note not found" }, { status: 404 });
       }
       return NextResponse.json(data);
     }
 
-    return NextResponse.json(
-      { error: 'Route not found' },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Route not found" }, { status: 404 });
   } catch (error) {
-    console.error('PUT /api/notes error:', error);
+    console.error("PUT /api/notes error:", error);
     return NextResponse.json(
-      { error: 'Internal server error', details: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
+      {
+        error: "Internal server error",
+        details: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 500 },
     );
   }
 }
 
 // PATCH - Mettre à jour partiellement une note
-export async function PATCH(
-  request: NextRequest,
-  context: RouteContext
-) {
+export async function PATCH(request: NextRequest, context: RouteContext) {
   return PUT(request, context);
 }
 
 // DELETE - Supprimer une note
-export async function DELETE(
-  request: NextRequest,
-  context: RouteContext
-) {
+export async function DELETE(request: NextRequest, context: RouteContext) {
   try {
     const supabase = getSupabaseClient();
     const { path } = await context.params;
@@ -173,24 +152,21 @@ export async function DELETE(
     if (path && path.length === 1) {
       const noteId = path[0];
 
-      const { error } = await supabase
-        .from('notes')
-        .delete()
-        .eq('id', noteId);
+      const { error } = await supabase.from("notes").delete().eq("id", noteId);
 
       if (error) throw error;
       return NextResponse.json({ success: true }, { status: 200 });
     }
 
-    return NextResponse.json(
-      { error: 'Route not found' },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: "Route not found" }, { status: 404 });
   } catch (error) {
-    console.error('DELETE /api/notes error:', error);
+    console.error("DELETE /api/notes error:", error);
     return NextResponse.json(
-      { error: 'Internal server error', details: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
+      {
+        error: "Internal server error",
+        details: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 500 },
     );
   }
 }
