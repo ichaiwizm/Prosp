@@ -79,7 +79,7 @@ export function ExchangeList({ prospectId }: ExchangeListProps) {
       const data = await exchangesApi.listByProspect(prospectId);
       setExchanges(data);
     } catch (error) {
-      toast.error("Erreur lors du chargement des \u00e9changes");
+      toast.error("Erreur lors du chargement des échanges");
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -92,7 +92,7 @@ export function ExchangeList({ prospectId }: ExchangeListProps) {
 
     try {
       await exchangesApi.create(formData);
-      toast.success("\u00c9change ajout\u00e9 avec succ\u00e8s");
+      toast.success("Échange ajouté avec succès");
       setIsDialogOpen(false);
       setFormData({
         prospect_id: prospectId,
@@ -104,7 +104,7 @@ export function ExchangeList({ prospectId }: ExchangeListProps) {
       });
       loadExchanges();
     } catch (error) {
-      toast.error("Erreur lors de l'ajout de l'\u00e9change");
+      toast.error("Erreur lors de l'ajout de l'échange");
       console.error(error);
     } finally {
       setIsSubmitting(false);
@@ -123,16 +123,16 @@ export function ExchangeList({ prospectId }: ExchangeListProps) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">Historique des \u00e9changes</h3>
+        <h3 className="text-lg font-semibold">Historique des échanges</h3>
         <Button onClick={() => setIsDialogOpen(true)} size="sm">
           <Plus className="size-4" />
-          Nouvel \u00e9change
+          Nouvel échange
         </Button>
       </div>
 
       {exchanges.length === 0 ? (
         <Card className="p-8 text-center text-muted-foreground">
-          Aucun \u00e9change enregistr\u00e9
+          Aucun échange enregistré
         </Card>
       ) : (
         <div className="space-y-4">
@@ -157,7 +157,7 @@ export function ExchangeList({ prospectId }: ExchangeListProps) {
                           {exchange.created_at &&
                             format(
                               new Date(exchange.created_at),
-                              "PPP \u00e0 HH:mm",
+                              "PPP à HH:mm",
                               { locale: fr },
                             )}
                         </p>
@@ -177,7 +177,7 @@ export function ExchangeList({ prospectId }: ExchangeListProps) {
                           className="capitalize"
                         >
                           {exchange.status === "completed"
-                            ? "Termin\u00e9"
+                            ? "Terminé"
                             : exchange.status}
                         </Badge>
                       </div>
@@ -199,7 +199,7 @@ export function ExchangeList({ prospectId }: ExchangeListProps) {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Nouvel \u00e9change</DialogTitle>
+            <DialogTitle>Nouvel échange</DialogTitle>
           </DialogHeader>
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -223,7 +223,7 @@ export function ExchangeList({ prospectId }: ExchangeListProps) {
                   <SelectContent>
                     <SelectItem value="call">Appel</SelectItem>
                     <SelectItem value="email">Email</SelectItem>
-                    <SelectItem value="meeting">R\u00e9union</SelectItem>
+                    <SelectItem value="meeting">Réunion</SelectItem>
                     <SelectItem value="linkedin">LinkedIn</SelectItem>
                     <SelectItem value="other">Autre</SelectItem>
                   </SelectContent>
@@ -278,7 +278,7 @@ export function ExchangeList({ prospectId }: ExchangeListProps) {
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, content: e.target.value }))
                 }
-                placeholder="D\u00e9taillez l'\u00e9change..."
+                placeholder="Détaillez l'échange..."
                 rows={4}
               />
             </div>

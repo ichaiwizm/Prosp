@@ -22,8 +22,8 @@ export function Pagination({
   return (
     <div className="flex items-center justify-between px-2">
       <div className="text-sm text-muted-foreground">
-        Affichage de {startItem} \u00e0 {endItem} sur {totalItems}{" "}
-        r\u00e9sultats
+        Affichage de {startItem} à {endItem} sur {totalItems}{" "}
+        résultats
       </div>
 
       <div className="flex items-center gap-2">
@@ -34,7 +34,7 @@ export function Pagination({
           disabled={currentPage === 1}
         >
           <ChevronLeft className="size-4" />
-          Pr\u00e9c\u00e9dent
+          Précédent
         </Button>
 
         <div className="flex items-center gap-1">

@@ -56,18 +56,18 @@ export function ProspectForm({
     try {
       if (initialData) {
         await prospectsApi.update(initialData.id, formData);
-        toast.success("Prospect mis \u00e0 jour avec succ\u00e8s");
+        toast.success("Prospect mis à jour avec succès");
       } else {
         await prospectsApi.create(formData);
-        toast.success("Prospect cr\u00e9\u00e9 avec succ\u00e8s");
+        toast.success("Prospect créé avec succès");
       }
       onOpenChange(false);
       onSuccess?.();
     } catch (error) {
       toast.error(
         initialData
-          ? "Erreur lors de la mise \u00e0 jour du prospect"
-          : "Erreur lors de la cr\u00e9ation du prospect",
+          ? "Erreur lors de la mise à jour du prospect"
+          : "Erreur lors de la création du prospect",
       );
       console.error(error);
     } finally {
@@ -133,7 +133,7 @@ export function ProspectForm({
 
             <div className="space-y-2">
               <label htmlFor="phone" className="text-sm font-medium">
-                T\u00e9l\u00e9phone
+                Téléphone
               </label>
               <Input
                 id="phone"
@@ -172,11 +172,11 @@ export function ProspectForm({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="lead">Lead</SelectItem>
-                  <SelectItem value="contacted">Contact\u00e9</SelectItem>
-                  <SelectItem value="qualified">Qualifi\u00e9</SelectItem>
+                  <SelectItem value="contacted">Contacté</SelectItem>
+                  <SelectItem value="qualified">Qualifié</SelectItem>
                   <SelectItem value="proposal">Proposition</SelectItem>
-                  <SelectItem value="negotiation">N\u00e9gociation</SelectItem>
-                  <SelectItem value="won">Gagn\u00e9</SelectItem>
+                  <SelectItem value="negotiation">Négociation</SelectItem>
+                  <SelectItem value="won">Gagné</SelectItem>
                   <SelectItem value="lost">Perdu</SelectItem>
                 </SelectContent>
               </Select>
@@ -184,7 +184,7 @@ export function ProspectForm({
 
             <div className="space-y-2">
               <label htmlFor="priority" className="text-sm font-medium">
-                Priorit\u00e9
+                Priorité
               </label>
               <Select
                 value={formData.priority}
@@ -211,7 +211,7 @@ export function ProspectForm({
               id="source"
               value={formData.source}
               onChange={(e) => updateField("source", e.target.value)}
-              placeholder="Ex: LinkedIn, Site web, R\u00e9f\u00e9rence..."
+              placeholder="Ex: LinkedIn, Site web, Référence..."
             />
           </div>
 
@@ -223,20 +223,20 @@ export function ProspectForm({
               id="potential_need"
               value={formData.potential_need}
               onChange={(e) => updateField("potential_need", e.target.value)}
-              placeholder="D\u00e9crivez le besoin potentiel du prospect..."
+              placeholder="Décrivez le besoin potentiel du prospect..."
               rows={3}
             />
           </div>
 
           <div className="space-y-2">
             <label htmlFor="confirmed_need" className="text-sm font-medium">
-              Besoin confirm\u00e9
+              Besoin confirmé
             </label>
             <Textarea
               id="confirmed_need"
               value={formData.confirmed_need}
               onChange={(e) => updateField("confirmed_need", e.target.value)}
-              placeholder="D\u00e9crivez le besoin confirm\u00e9..."
+              placeholder="Décrivez le besoin confirmé..."
               rows={3}
             />
           </div>
@@ -254,8 +254,8 @@ export function ProspectForm({
               {isLoading
                 ? "En cours..."
                 : initialData
-                  ? "Mettre \u00e0 jour"
-                  : "Cr\u00e9er"}
+                  ? "Mettre à jour"
+                  : "Créer"}
             </Button>
           </DialogFooter>
         </form>

@@ -31,9 +31,9 @@ interface NotesListProps {
 }
 
 const noteTypeLabels = {
-  general: "G\u00e9n\u00e9rale",
+  general: "Générale",
   call: "Appel",
-  meeting: "R\u00e9union",
+  meeting: "Réunion",
   reminder: "Rappel",
   followup: "Suivi",
 };
@@ -82,7 +82,7 @@ export function NotesList({ prospectId }: NotesListProps) {
 
     try {
       await notesApi.create(formData);
-      toast.success("Note ajout\u00e9e avec succ\u00e8s");
+      toast.success("Note ajoutée avec succès");
       setIsDialogOpen(false);
       setFormData({
         prospect_id: prospectId,
@@ -104,24 +104,24 @@ export function NotesList({ prospectId }: NotesListProps) {
       await notesApi.update(note.id, { is_pinned: !note.is_pinned });
       toast.success(
         note.is_pinned
-          ? "Note d\u00e9s\u00e9pingl\u00e9e"
-          : "Note \u00e9pingl\u00e9e",
+          ? "Note désépinglée"
+          : "Note épinglée",
       );
       loadNotes();
     } catch (error) {
-      toast.error("Erreur lors de la mise \u00e0 jour");
+      toast.error("Erreur lors de la mise à jour");
       console.error(error);
     }
   };
 
   const handleDelete = async (noteId: string) => {
-    if (!confirm("\u00cates-vous s\u00fbr de vouloir supprimer cette note ?")) {
+    if (!confirm("Êtes-vous sûr de vouloir supprimer cette note ?")) {
       return;
     }
 
     try {
       await notesApi.delete(noteId);
-      toast.success("Note supprim\u00e9e avec succ\u00e8s");
+      toast.success("Note supprimée avec succès");
       loadNotes();
     } catch (error) {
       toast.error("Erreur lors de la suppression");
@@ -153,7 +153,7 @@ export function NotesList({ prospectId }: NotesListProps) {
 
       {notes.length === 0 ? (
         <Card className="p-8 text-center text-muted-foreground">
-          Aucune note enregistr\u00e9e
+          Aucune note enregistrée
         </Card>
       ) : (
         <div className="space-y-4">
@@ -161,7 +161,7 @@ export function NotesList({ prospectId }: NotesListProps) {
             <div className="space-y-2">
               <h4 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                 <Pin className="size-4" />
-                Notes \u00e9pingl\u00e9es
+                Notes épinglées
               </h4>
               {pinnedNotes.map((note) => (
                 <NoteCard
@@ -219,9 +219,9 @@ export function NotesList({ prospectId }: NotesListProps) {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="general">G\u00e9n\u00e9rale</SelectItem>
+                    <SelectItem value="general">Générale</SelectItem>
                     <SelectItem value="call">Appel</SelectItem>
-                    <SelectItem value="meeting">R\u00e9union</SelectItem>
+                    <SelectItem value="meeting">Réunion</SelectItem>
                     <SelectItem value="reminder">Rappel</SelectItem>
                     <SelectItem value="followup">Suivi</SelectItem>
                   </SelectContent>
@@ -244,7 +244,7 @@ export function NotesList({ prospectId }: NotesListProps) {
                     className="size-4 rounded border-gray-300"
                   />
                   <label htmlFor="is_pinned" className="text-sm cursor-pointer">
-                    \u00c9pingler cette note
+                    Épingler cette note
                   </label>
                 </div>
               </div>
@@ -260,7 +260,7 @@ export function NotesList({ prospectId }: NotesListProps) {
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, content: e.target.value }))
                 }
-                placeholder="\u00c9crivez votre note..."
+                placeholder="Écrivez votre note..."
                 rows={6}
                 required
               />
@@ -297,7 +297,7 @@ function NoteCard({
 }) {
   const typeLabel = note.type
     ? noteTypeLabels[note.type]
-    : "G\u00e9n\u00e9rale";
+    : "Générale";
   const typeColor = note.type
     ? noteTypeColors[note.type]
     : noteTypeColors.general;

@@ -127,21 +127,25 @@ export default function ProspectDetailPage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        // Fetch prospect details
-        const prospectRes = await fetch(`/api/prospects/${id}`);
+        // Fetch all data in parallel for better performance
+        const [prospectRes, exchangesRes, notesRes] = await Promise.all([
+          fetch(`/api/prospects/${id}`),
+          fetch(`/api/prospects/${id}/exchanges`),
+          fetch(`/api/prospects/${id}/notes`),
+        ]);
+
+        // Handle prospect data (required)
         if (!prospectRes.ok) throw new Error("Impossible de charger le prospect");
         const prospectData = await prospectRes.json();
         setProspect(prospectData);
 
-        // Fetch exchanges
-        const exchangesRes = await fetch(`/api/prospects/${id}/exchanges`);
+        // Handle exchanges data (optional)
         if (exchangesRes.ok) {
           const exchangesData = await exchangesRes.json();
           setExchanges(exchangesData);
         }
 
-        // Fetch notes
-        const notesRes = await fetch(`/api/prospects/${id}/notes`);
+        // Handle notes data (optional)
         if (notesRes.ok) {
           const notesData = await notesRes.json();
           setNotes(notesData);
