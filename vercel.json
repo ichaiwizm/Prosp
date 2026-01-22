@@ -1,0 +1,8 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "regions": ["cdg1"],
+  "buildCommand": "cd prospekt && npm install && npm run build",
+  "outputDirectory": "prospekt/.next",
+  "installCommand": "cd prospekt && npm install"
+}
