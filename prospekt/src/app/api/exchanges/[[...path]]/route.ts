@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseClient } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase/server";
 
 interface RouteContext {
   params: Promise<{
-    path: string[];
+    path?: string[];
   }>;
 }
 
 // GET - Liste tous les exchanges ou détail d'un exchange
 export async function GET(request: NextRequest, context: RouteContext) {
   try {
-    const supabase = getSupabaseClient();
+    const supabase = await createClient();
     const { path } = await context.params;
     const { searchParams } = new URL(request.url);
     const prospectId = searchParams.get("prospect_id");
@@ -73,7 +73,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
 // POST - Créer un nouveau exchange
 export async function POST(request: NextRequest, context: RouteContext) {
   try {
-    const supabase = getSupabaseClient();
+    const supabase = await createClient();
     const { path } = await context.params;
 
     // POST /api/exchanges - Créer un exchange
@@ -105,7 +105,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
 // PUT - Mettre à jour un exchange
 export async function PUT(request: NextRequest, context: RouteContext) {
   try {
-    const supabase = getSupabaseClient();
+    const supabase = await createClient();
     const { path } = await context.params;
 
     // PUT /api/exchanges/[id] - Update un exchange
@@ -151,7 +151,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
 // DELETE - Supprimer un exchange
 export async function DELETE(request: NextRequest, context: RouteContext) {
   try {
-    const supabase = getSupabaseClient();
+    const supabase = await createClient();
     const { path } = await context.params;
 
     // DELETE /api/exchanges/[id] - Delete un exchange

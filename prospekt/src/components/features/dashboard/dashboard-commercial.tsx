@@ -11,7 +11,15 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Prospect, Exchange, Document } from "@/types/database.types";
+import { Prospect, Exchange } from "@/types/database.types";
+
+interface KnowledgeDoc {
+  id: string;
+  title: string;
+  content: string;
+  category: string;
+  tags: string[];
+}
 
 interface DashboardStats {
   toContactToday: number;
@@ -27,7 +35,7 @@ export function DashboardCommercial() {
   });
   const [priorityProspects, setPriorityProspects] = useState<Prospect[]>([]);
   const [recentExchanges, setRecentExchanges] = useState<Exchange[]>([]);
-  const [suggestedDocs, setSuggestedDocs] = useState<Document[]>([]);
+  const [suggestedDocs, setSuggestedDocs] = useState<KnowledgeDoc[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -75,10 +83,10 @@ export function DashboardCommercial() {
           setRecentExchanges(exchanges.slice(0, 5));
         }
 
-        // Fetch suggested docs
-        const docsRes = await fetch("/api/docs");
+        // Fetch suggested docs from knowledge base
+        const docsRes = await fetch("/api/knowledge-docs");
         if (docsRes.ok) {
-          const docs: Document[] = await docsRes.json();
+          const docs = await docsRes.json();
           setSuggestedDocs(docs.slice(0, 3));
         }
       } catch (error) {
@@ -318,25 +326,23 @@ export function DashboardCommercial() {
             ) : (
               <div className="space-y-3">
                 {suggestedDocs.map((doc) => (
-                  <div
+                  <Link
                     key={doc.id}
-                    className="p-3 border rounded-lg space-y-2 hover:bg-accent transition-colors"
+                    href={`/docs/${doc.id}`}
+                    className="block p-3 border rounded-lg space-y-2 hover:bg-accent transition-colors"
                   >
                     <div className="flex items-start justify-between">
                       <div className="space-y-1 flex-1">
                         <h4 className="font-medium text-sm">{doc.title}</h4>
-                        {doc.description && (
-                          <p className="text-xs text-muted-foreground line-clamp-2">
-                            {doc.description}
-                          </p>
-                        )}
-                        <p className="text-xs text-muted-foreground">
-                          {doc.filename} • {(doc.file_size / 1024).toFixed(0)}{" "}
-                          KB
+                        <p className="text-xs text-muted-foreground line-clamp-2">
+                          {doc.content.substring(0, 100)}...
                         </p>
+                        <Badge variant="outline" className="text-xs">
+                          {doc.category}
+                        </Badge>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             )}

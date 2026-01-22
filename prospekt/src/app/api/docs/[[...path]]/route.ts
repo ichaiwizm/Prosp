@@ -1,17 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseClient } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase/server";
 import type { Document } from "@/types";
 
 interface RouteContext {
   params: Promise<{
-    path: string[];
+    path?: string[];
   }>;
 }
 
 // GET - Liste tous les documents ou détail d'un document
 export async function GET(request: NextRequest, context: RouteContext) {
   try {
-    const supabase = getSupabaseClient();
+    const supabase = await createClient();
     const { path } = await context.params;
     const { searchParams } = new URL(request.url);
     const prospectId = searchParams.get("prospect_id");
@@ -108,7 +108,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
 // POST - Uploader un nouveau document
 export async function POST(request: NextRequest, context: RouteContext) {
   try {
-    const supabase = getSupabaseClient();
+    const supabase = await createClient();
     const { path } = await context.params;
 
     // POST /api/docs - Upload un document
@@ -177,7 +177,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
 // PUT - Mettre à jour un document
 export async function PUT(request: NextRequest, context: RouteContext) {
   try {
-    const supabase = getSupabaseClient();
+    const supabase = await createClient();
     const { path } = await context.params;
 
     // PUT /api/docs/[id] - Update un document (métadonnées uniquement)
@@ -232,7 +232,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
 // DELETE - Supprimer un document
 export async function DELETE(request: NextRequest, context: RouteContext) {
   try {
-    const supabase = getSupabaseClient();
+    const supabase = await createClient();
     const { path } = await context.params;
 
     // DELETE /api/docs/[id] - Delete un document

@@ -93,11 +93,11 @@ export default function LoginPage() {
 
   const fillTestCredentials = (role: "TECH" | "COMMERCIAL") => {
     if (role === "TECH") {
-      setEmail("ichai@prospekt.app");
-      setPassword("password123");
+      setEmail("ichaiw@prospekt.app");
+      setPassword("Azertyui26");
     } else {
       setEmail("manu@prospekt.app");
-      setPassword("password123");
+      setPassword("Azertyui26");
     }
     setError(null);
     setEmailError(null);

@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import { AssistantMessage, AssistantContext, AssistantResponse } from "@/types";
 import {
   X,
@@ -22,6 +21,28 @@ import {
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+
+// Helper function for status translation
+function getStatusLabel(status: string): string {
+  const labels: Record<string, string> = {
+    lead: "Lead",
+    contacted: "Contacté",
+    qualified: "Qualifié",
+    proposal: "Proposition",
+    negotiation: "Négociation",
+    won: "Gagné",
+    lost: "Perdu",
+    IN_DISCUSSION: "En discussion",
+    NEW: "Nouveau",
+    TO_CONTACT: "À contacter",
+    NEED_CONFIRMED: "Besoin confirmé",
+    IN_PROGRESS: "En cours",
+    WON: "Gagné",
+    LOST: "Perdu",
+    ON_HOLD: "En pause",
+  };
+  return labels[status] || status;
+}
 
 interface AssistantPanelProps {
   context: AssistantContext;
@@ -43,7 +64,25 @@ export function AssistantPanel({ context, onClose }: AssistantPanelProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    // Initialize conversation with context
+    // Initialize conversation with welcome message immediately
+    if (context.prospect) {
+      const welcomeMessage: AssistantMessage = {
+        role: "assistant",
+        content: `Bonjour! Je suis votre assistant IA pour vous aider avec ${context.prospect.contact_name}. Je peux vous aider a preparer votre appel, repondre a vos questions, et gerer les objections.`,
+        timestamp: new Date().toISOString(),
+      };
+      setMessages([welcomeMessage]);
+
+      // Set initial system info from context
+      setSystemInfo({
+        callObjective: context.callObjective,
+        suggestedQuestions: context.suggestedQuestions || [],
+        possibleObjections: context.possibleObjections || [],
+        relevantDocs: context.relevantDocs || [],
+      });
+    }
+
+    // Fetch additional AI-generated info in background
     initializeConversation();
   }, [context]);
 
@@ -59,22 +98,14 @@ export function AssistantPanel({ context, onClose }: AssistantPanelProps) {
   const initializeConversation = async () => {
     if (!context.prospectId || !context.prospect) return;
 
-    const welcomeMessage: AssistantMessage = {
-      role: "assistant",
-      content: `Bonjour! Je suis votre assistant IA pour vous aider avec ${context.prospect.contact_name}. Je peux vous aider à préparer votre appel, répondre à vos questions, et gérer les objections.`,
-      timestamp: new Date().toISOString(),
-    };
-
-    setMessages([welcomeMessage]);
-
-    // Generate system information
+    // Generate additional AI insights in background (optional enhancement)
     try {
       const response = await fetch("/api/assistant", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message:
-            "Analyse ce prospect et génère: 1) Un objectif pour l'appel 2) 3 questions stratégiques à poser 3) 3 objections possibles",
+            "Analyse ce prospect et genere: 1) Un objectif pour l'appel 2) 3 questions strategiques a poser 3) 3 objections possibles",
           prospectId: context.prospectId,
           context: JSON.stringify({
             prospect: context.prospect,
@@ -87,8 +118,7 @@ export function AssistantPanel({ context, onClose }: AssistantPanelProps) {
       if (response.ok) {
         const data: AssistantResponse = await response.json();
 
-        // Parse the response to extract structured info
-        // For now, just display it as a message
+        // Add AI analysis as a system message
         const systemMessage: AssistantMessage = {
           role: "system",
           content: data.message,
@@ -96,17 +126,23 @@ export function AssistantPanel({ context, onClose }: AssistantPanelProps) {
         };
 
         setMessages((prev) => [...prev, systemMessage]);
-
-        // You can parse the response to populate systemInfo
-        setSystemInfo({
-          callObjective: context.callObjective,
-          suggestedQuestions: context.suggestedQuestions || [],
-          possibleObjections: context.possibleObjections || [],
-          relevantDocs: context.relevantDocs || [],
-        });
+      } else {
+        // Handle API errors gracefully - don't show error for initialization
+        // since it's optional background enhancement
+        const errorData = await response.json().catch(() => ({}));
+        if (errorData.code === "MISSING_API_KEY" || errorData.code === "INVALID_API_KEY") {
+          const errorMessage: AssistantMessage = {
+            role: "system",
+            content: errorData.message || "L'assistant IA n'est pas configure. Veuillez contacter l'administrateur.",
+            timestamp: new Date().toISOString(),
+          };
+          setMessages((prev) => [...prev, errorMessage]);
+        }
+        // For other errors, silently skip AI analysis - welcome message is still shown
       }
     } catch (error) {
       console.error("Error initializing conversation:", error);
+      // Silently fail for initialization - welcome message is still shown
     }
   };
 
@@ -139,11 +175,31 @@ export function AssistantPanel({ context, onClose }: AssistantPanelProps) {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to get response from assistant");
-      }
+      const data = await response.json();
 
-      const data: AssistantResponse = await response.json();
+      if (!response.ok) {
+        // Handle specific error types with user-friendly messages
+        let errorContent = "Desole, une erreur s'est produite. Veuillez reessayer.";
+
+        if (data.code === "MISSING_API_KEY" || data.code === "INVALID_API_KEY") {
+          errorContent = data.message || "L'assistant IA n'est pas configure. Veuillez contacter l'administrateur.";
+        } else if (data.code === "RATE_LIMIT") {
+          errorContent = data.message || "Trop de requetes. Veuillez reessayer dans quelques instants.";
+        } else if (data.code === "OVERLOADED") {
+          errorContent = data.message || "Le service est temporairement surcharge. Veuillez reessayer plus tard.";
+        } else if (data.message) {
+          errorContent = data.message;
+        }
+
+        const errorMessage: AssistantMessage = {
+          role: "assistant",
+          content: errorContent,
+          timestamp: new Date().toISOString(),
+        };
+
+        setMessages((prev) => [...prev, errorMessage]);
+        return;
+      }
 
       const assistantMessage: AssistantMessage = {
         role: "assistant",
@@ -157,7 +213,7 @@ export function AssistantPanel({ context, onClose }: AssistantPanelProps) {
 
       const errorMessage: AssistantMessage = {
         role: "assistant",
-        content: "Désolé, une erreur s'est produite. Veuillez réessayer.",
+        content: "Impossible de contacter l'assistant. Verifiez votre connexion et reessayez.",
         timestamp: new Date().toISOString(),
       };
 
@@ -177,7 +233,7 @@ export function AssistantPanel({ context, onClose }: AssistantPanelProps) {
 
   return (
     <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-4xl h-[85vh] flex flex-col shadow-2xl">
+      <Card className="w-full max-w-6xl h-[85vh] flex flex-col shadow-2xl">
         {/* Header */}
         <CardHeader className="border-b shrink-0">
           <div className="flex items-center justify-between">
@@ -231,7 +287,7 @@ export function AssistantPanel({ context, onClose }: AssistantPanelProps) {
                         {context.prospect.company_name}
                       </p>
                     )}
-                    <Badge variant="outline">{context.prospect.status}</Badge>
+                    <Badge variant="outline">{getStatusLabel(context.prospect.status)}</Badge>
                   </div>
                 </div>
               )}

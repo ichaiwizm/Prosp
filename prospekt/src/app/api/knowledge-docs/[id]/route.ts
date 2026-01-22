@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseClient } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase";
 
 interface RouteContext {
   params: Promise<{
@@ -10,11 +10,11 @@ interface RouteContext {
 // GET - Récupérer un document spécifique
 export async function GET(request: NextRequest, context: RouteContext) {
   try {
-    const supabase = getSupabaseClient();
+    const supabase = await createClient();
     const { id } = await context.params;
 
     const { data, error } = await supabase
-      .from("knowledge_docs")
+      .from("docs")
       .select("*")
       .eq("id", id)
       .single();
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
 // PUT - Mettre à jour un document
 export async function PUT(request: NextRequest, context: RouteContext) {
   try {
-    const supabase = getSupabaseClient();
+    const supabase = await createClient();
     const { id } = await context.params;
     const body = await request.json();
 
@@ -58,7 +58,7 @@ export async function PUT(request: NextRequest, context: RouteContext) {
     }
 
     const { data, error } = await supabase
-      .from("knowledge_docs")
+      .from("docs")
       .update(updateData)
       .eq("id", id)
       .select()
@@ -89,11 +89,11 @@ export async function PUT(request: NextRequest, context: RouteContext) {
 // DELETE - Supprimer un document
 export async function DELETE(request: NextRequest, context: RouteContext) {
   try {
-    const supabase = getSupabaseClient();
+    const supabase = await createClient();
     const { id } = await context.params;
 
     const { error } = await supabase
-      .from("knowledge_docs")
+      .from("docs")
       .delete()
       .eq("id", id);
 

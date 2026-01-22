@@ -3,13 +3,49 @@ import Anthropic from "@anthropic-ai/sdk";
 import { getSupabaseClient } from "@/lib/supabase";
 import type { Prospect } from "@/types";
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY || "",
-});
+// Helper function to check if API key is configured
+function isApiKeyConfigured(): boolean {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  return !!(apiKey && apiKey.trim() !== "" && apiKey !== "your_api_key_here");
+}
+
+// Create Anthropic client lazily to avoid errors at module load
+function getAnthropicClient(): Anthropic | null {
+  if (!isApiKeyConfigured()) {
+    return null;
+  }
+  return new Anthropic({
+    apiKey: process.env.ANTHROPIC_API_KEY,
+  });
+}
 
 // POST - Assistant IA avec Claude
 export async function POST(request: NextRequest) {
   try {
+    // Check for API key before processing
+    if (!isApiKeyConfigured()) {
+      return NextResponse.json(
+        {
+          error: "Configuration error",
+          message: "L'assistant IA n'est pas configuré. Veuillez configurer la clé API Anthropic (ANTHROPIC_API_KEY) dans les variables d'environnement.",
+          code: "MISSING_API_KEY",
+        },
+        { status: 503 },
+      );
+    }
+
+    const anthropic = getAnthropicClient();
+    if (!anthropic) {
+      return NextResponse.json(
+        {
+          error: "Configuration error",
+          message: "Impossible d'initialiser le client Anthropic.",
+          code: "CLIENT_INIT_ERROR",
+        },
+        { status: 503 },
+      );
+    }
+
     const body = await request.json();
     const { message, prospectId, context } = body;
 
@@ -99,10 +135,45 @@ Aide l'utilisateur avec ce prospect en répondant à ses questions et en suggér
     console.error("POST /api/assistant error:", error);
 
     if (error instanceof Anthropic.APIError) {
+      // Handle specific API errors with user-friendly messages
+      if (error.status === 401) {
+        return NextResponse.json(
+          {
+            error: "Authentication error",
+            message: "La clé API Anthropic est invalide. Veuillez vérifier votre configuration.",
+            code: "INVALID_API_KEY",
+          },
+          { status: 401 },
+        );
+      }
+
+      if (error.status === 429) {
+        return NextResponse.json(
+          {
+            error: "Rate limit exceeded",
+            message: "Trop de requêtes. Veuillez réessayer dans quelques instants.",
+            code: "RATE_LIMIT",
+          },
+          { status: 429 },
+        );
+      }
+
+      if (error.status === 529) {
+        return NextResponse.json(
+          {
+            error: "Service overloaded",
+            message: "Le service est temporairement surchargé. Veuillez réessayer plus tard.",
+            code: "OVERLOADED",
+          },
+          { status: 503 },
+        );
+      }
+
       return NextResponse.json(
         {
           error: "Anthropic API error",
-          details: error.message,
+          message: error.message || "Une erreur s'est produite avec l'API Anthropic.",
+          code: "API_ERROR",
           status: error.status,
         },
         { status: error.status || 500 },
@@ -112,7 +183,8 @@ Aide l'utilisateur avec ce prospect en répondant à ses questions et en suggér
     return NextResponse.json(
       {
         error: "Internal server error",
-        details: error instanceof Error ? error.message : "Unknown error",
+        message: error instanceof Error ? error.message : "Une erreur inconnue s'est produite.",
+        code: "INTERNAL_ERROR",
       },
       { status: 500 },
     );

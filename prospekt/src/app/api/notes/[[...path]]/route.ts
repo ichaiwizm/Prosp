@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseClient } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase/server";
 
 interface RouteContext {
   params: Promise<{
-    path: string[];
+    path?: string[];
   }>;
 }
 
 // GET - Liste toutes les notes ou détail d'une note
 export async function GET(request: NextRequest, context: RouteContext) {
   try {
-    const supabase = getSupabaseClient();
+    const supabase = await createClient();
     const { path } = await context.params;
     const { searchParams } = new URL(request.url);
     const prospectId = searchParams.get("prospect_id");
@@ -70,7 +70,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
 // POST - Créer une nouvelle note
 export async function POST(request: NextRequest, context: RouteContext) {
   try {
-    const supabase = getSupabaseClient();
+    const supabase = await createClient();
     const { path } = await context.params;
 
     // POST /api/notes - Créer une note
@@ -102,7 +102,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
 // PUT - Mettre à jour une note
 export async function PUT(request: NextRequest, context: RouteContext) {
   try {
-    const supabase = getSupabaseClient();
+    const supabase = await createClient();
     const { path } = await context.params;
 
     // PUT /api/notes/[id] - Update une note
@@ -145,7 +145,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
 // DELETE - Supprimer une note
 export async function DELETE(request: NextRequest, context: RouteContext) {
   try {
-    const supabase = getSupabaseClient();
+    const supabase = await createClient();
     const { path } = await context.params;
 
     // DELETE /api/notes/[id] - Delete une note

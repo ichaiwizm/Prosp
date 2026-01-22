@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseClient } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase/server";
 
 interface RouteContext {
   params: Promise<{
-    path: string[];
+    path?: string[];
   }>;
 }
 
 // GET - Liste tous les prospects ou détail d'un prospect ou sous-ressources
 export async function GET(request: NextRequest, context: RouteContext) {
   try {
-    const supabase = getSupabaseClient();
+    const supabase = await createClient();
     const { path } = await context.params;
 
     // GET /api/prospects - Liste tous les prospects
@@ -98,7 +98,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
 // POST - Créer un nouveau prospect
 export async function POST(request: NextRequest, context: RouteContext) {
   try {
-    const supabase = getSupabaseClient();
+    const supabase = await createClient();
     const { path } = await context.params;
 
     // POST /api/prospects - Créer un prospect
@@ -130,7 +130,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
 // PUT - Mettre à jour un prospect
 export async function PUT(request: NextRequest, context: RouteContext) {
   try {
-    const supabase = getSupabaseClient();
+    const supabase = await createClient();
     const { path } = await context.params;
 
     // PUT /api/prospects/[id] - Update un prospect
@@ -176,7 +176,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
 // DELETE - Supprimer un prospect
 export async function DELETE(request: NextRequest, context: RouteContext) {
   try {
-    const supabase = getSupabaseClient();
+    const supabase = await createClient();
     const { path } = await context.params;
 
     // DELETE /api/prospects/[id] - Delete un prospect

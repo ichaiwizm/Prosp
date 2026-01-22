@@ -43,9 +43,9 @@ export function useUser() {
           setUser(session.user);
         }
 
-        // Fetch user profile from users table
+        // Fetch user profile from profiles table
         const { data: profileData, error: profileError } = await supabase
-          .from("users")
+          .from("profiles")
           .select("id, email, name, role")
           .eq("id", session.user.id)
           .single();
@@ -88,7 +88,7 @@ export function useUser() {
 
       try {
         const { data: profileData, error: profileError } = await supabase
-          .from("users")
+          .from("profiles")
           .select("id, email, name, role")
           .eq("id", session.user.id)
           .single();

@@ -118,7 +118,12 @@ export default function ProspectsPage() {
           bValue = b.status || "";
           break;
         case "priority":
-          const priorityOrder = { urgent: 4, high: 3, medium: 2, low: 1 };
+          const priorityOrder: Record<string, number> = {
+            URGENT: 4, urgent: 4,
+            HIGH: 3, high: 3,
+            MEDIUM: 2, medium: 2,
+            LOW: 1, low: 1
+          };
           aValue = priorityOrder[a.priority] || 0;
           bValue = priorityOrder[b.priority] || 0;
           break;
@@ -200,13 +205,14 @@ export default function ProspectsPage() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Tous les statuts</SelectItem>
-              <SelectItem value="lead">Lead</SelectItem>
-              <SelectItem value="contacted">Contacté</SelectItem>
-              <SelectItem value="qualified">Qualifié</SelectItem>
-              <SelectItem value="proposal">Proposition</SelectItem>
-              <SelectItem value="negotiation">Négociation</SelectItem>
-              <SelectItem value="won">Gagné</SelectItem>
-              <SelectItem value="lost">Perdu</SelectItem>
+              <SelectItem value="NEW">Nouveau</SelectItem>
+              <SelectItem value="TO_CONTACT">À contacter</SelectItem>
+              <SelectItem value="IN_DISCUSSION">En discussion</SelectItem>
+              <SelectItem value="NEED_CONFIRMED">Besoin confirmé</SelectItem>
+              <SelectItem value="IN_PROGRESS">En cours</SelectItem>
+              <SelectItem value="WON">Gagné</SelectItem>
+              <SelectItem value="LOST">Perdu</SelectItem>
+              <SelectItem value="ON_HOLD">En pause</SelectItem>
             </SelectContent>
           </Select>
 
@@ -216,10 +222,10 @@ export default function ProspectsPage() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Toutes les priorités</SelectItem>
-              <SelectItem value="urgent">Urgente</SelectItem>
-              <SelectItem value="high">Haute</SelectItem>
-              <SelectItem value="medium">Moyenne</SelectItem>
-              <SelectItem value="low">Basse</SelectItem>
+              <SelectItem value="URGENT">Urgente</SelectItem>
+              <SelectItem value="HIGH">Haute</SelectItem>
+              <SelectItem value="MEDIUM">Moyenne</SelectItem>
+              <SelectItem value="LOW">Basse</SelectItem>
             </SelectContent>
           </Select>
         </div>

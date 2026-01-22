@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseClient } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase";
 
 // GET - Liste tous les documents de documentation avec recherche et filtres
 export async function GET(request: NextRequest) {
   try {
-    const supabase = getSupabaseClient();
+    const supabase = await createClient();
     const { searchParams } = new URL(request.url);
 
     const search = searchParams.get("search");
@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
     const tag = searchParams.get("tag");
 
     let query = supabase
-      .from("knowledge_docs")
+      .from("docs")
       .select("*")
       .order("updated_at", { ascending: false });
 
@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
 // POST - Créer un nouveau document de documentation
 export async function POST(request: NextRequest) {
   try {
-    const supabase = getSupabaseClient();
+    const supabase = await createClient();
     const body = await request.json();
 
     const { title, category, content, tags } = body;
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
     }
 
     const { data, error } = await supabase
-      .from("knowledge_docs")
+      .from("docs")
       .insert({
         title,
         category,
